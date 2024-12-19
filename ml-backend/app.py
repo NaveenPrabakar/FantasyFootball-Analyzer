@@ -1,17 +1,11 @@
-from fastapi import FastAPI, UploadFile, HTTPException
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-import pandas as pd
-import numpy as np
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
-from joblib import dump, load
-import io
+import requests
 
-# Initialize FastAPI app
+
 app = FastAPI()
 
-# Add CORS middleware to allow communication between frontend and backend
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,66 +13,67 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Linear regression model
-model = None
-
-# Input schema for testing the model
-class TestData(BaseModel):
-    features: list
-
-# Train model endpoint
-@app.post("/train/")
-async def train_model(file: UploadFile):
-    try:
-        # Read the uploaded CSV file
-        content = await file.read()
-        data = pd.read_csv(io.BytesIO(content))
-
-        # Check if the dataset contains "target" column
-        if "target" not in data.columns:
-            raise HTTPException(status_code=400, detail="Dataset must have a 'target' column.")
-
-        # Split features and target
-        X = data.drop("target", axis=1)
-        y = data["target"]
-
-        # Train the Linear Regression model
-        global model
-        model = LinearRegression()
-        model.fit(X, y)
-
-        # Calculate training error
-        predictions = model.predict(X)
-        mse = mean_squared_error(y, predictions)
-
-        # Save the model
-        dump(model, "linear_regression_model.pkl")
-
-        return {"message": "Model trained successfully", "mse": mse}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error training model: {e}")
-
-# Test model endpoint
-@app.post("/test/")
-def test_model(test_data: TestData):
-    try:
-        # Ensure model is trained
-        global model
-        if model is None:
-            try:
-                model = load("linear_regression_model.pkl")
-            except:
-                raise HTTPException(status_code=400, detail="No trained model found. Train the model first.")
-
-        # Convert input features to numpy array
-        features = np.array(test_data.features).reshape(1, -1)
-        prediction = model.predict(features)
-
-        return {"prediction": prediction[0]}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error making prediction: {e}")
+# TheSportsDB API configurations
+API_KEY = "3"  # Free User API Key
+BASE_URL = "https://www.thesportsdb.com/api/v1/json"
 
 # Root endpoint
 @app.get("/")
 def root():
-    return {"message": "Welcome to the ML Backend"}
+    return {"message": "Welcome to the Sports Stats Backend"}
+
+# Search player stats endpoint
+@app.get("/player-stats/{player_name}")
+def get_player_stats(player_name: str):
+    try:
+        # Search for player by name using TheSportsDB
+        response = requests.get(f"{BASE_URL}/{API_KEY}/searchplayers.php", params={"p": player_name})
+        
+        if response.status_code == 200:
+            data = response.json()
+            players = data.get("player", [])
+
+            
+            if not players:
+                return {"message": f"No player found with the name '{player_name}'"}
+            
+            
+            player_data = []
+            for player in players:
+                player_data.append({
+                    "idPlayer": player.get("idPlayer"),
+                    "strPlayer": player.get("strPlayer"),
+                    "strTeam": player.get("strTeam"),
+                    "strPosition": player.get("strPosition"),
+                    "dateBorn": player.get("dateBorn"),
+                    "strNationality": player.get("strNationality"),
+                    "strDescriptionEN": player.get("strDescriptionEN"),
+                })
+            
+            return {"players": player_data}
+        else:
+            raise HTTPException(status_code=500, detail=f"Failed to fetch data. Status code: {response.status_code}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching player data: {e}")
+
+@app.get("/player/details/{player_id}")
+def get_player_details(player_id: str):
+    try:
+        
+        response = requests.get(f"{BASE_URL}/{API_KEY}/lookupplayer.php", params={"id": player_id})
+        
+        if response.status_code == 200:
+            data = response.json()
+            player_details = data.get("players", [])
+            
+            
+            if not player_details:
+                return {"message": f"No details found for player ID '{player_id}'"}
+            
+            return {"player_details": player_details[0]}
+        else:
+            raise HTTPException(status_code=500, detail=f"Failed to fetch data. Status code: {response.status_code}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching player details: {e}")
+
+
