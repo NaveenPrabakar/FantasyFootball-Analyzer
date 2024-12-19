@@ -2,83 +2,70 @@ import React, { useState } from "react";
 import axios from "axios";
 
 function App() {
-  const [file, setFile] = useState(null);
-  const [testData, setTestData] = useState("");
-  const [response, setResponse] = useState(null);
+  const [playerName, setPlayerName] = useState("");
+  const [playerStats, setPlayerStats] = useState(null);
+  const [predictedStats, setPredictedStats] = useState(null);
 
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
-
-  //On open
-  const handleTrain = async () => {
-    if (!file) {
-      alert("Please upload a CSV file.");
-      return;
-    }
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const res = await axios.post("http://127.0.0.1:8000/train/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setResponse(res.data);
-    } catch (error) {
-      alert("Error training model: " + error.response.data.detail);
-    }
-  };
-
-
-  //Button
-  const handleTest = async () => {
-    if (!testData) {
-      alert("Please enter test data.");
+  const handleSearch = async () => {
+    if (!playerName) {
+      alert("Please enter a player's name.");
       return;
     }
 
-    const features = testData.split(",").map(Number);
-
     try {
-      const res = await axios.post("http://127.0.0.1:8000/test/", {
-        features: features,
-      });
-      setResponse(res.data);
+      const res = await axios.get(`http://127.0.0.1:8000/player-stats/${playerName}`);
+      setPlayerStats(res.data);
+      setPredictedStats(null); // Reset predicted stats on new search
     } catch (error) {
-      alert("Error testing model: " + error.response.data.detail);
+      alert("Error fetching player stats: " + error.response?.data?.detail || error.message);
     }
   };
 
-  //CSS for the styling of the website
+  const handlePredict = async () => {
+    if (!playerStats) {
+      alert("Please search for a player first.");
+      return;
+    }
+
+    try {
+      const res = await axios.post(`http://127.0.0.1:8000/predict-stats/`, {
+        playerName: playerStats.name,
+      });
+      setPredictedStats(res.data);
+    } catch (error) {
+      alert("Error predicting stats: " + error.response?.data?.detail || error.message);
+    }
+  };
+
   const styles = {
     container: {
       fontFamily: "Verdana, sans-serif",
-      maxWidth: "800px",
-      margin: "auto",
+      width: "100vw",
+      height: "100vh",
+      margin: "0",
       padding: "20px",
-      borderRadius: "8px",
-      backgroundColor: "#003B1F", // Dark green, like a football field
+      backgroundColor: "#003B1F",
       color: "#FFFFFF",
-      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
     },
     header: {
       textAlign: "center",
-      fontSize: "2em",
+      fontSize: "2.5em",
       fontWeight: "bold",
-      padding: "10px",
-      borderBottom: "3px solid #FFB612", // Gold, mimicking goal posts
+      marginBottom: "20px",
+      borderBottom: "3px solid #FFB612",
     },
-    section: {
-      margin: "20px 0",
-      padding: "10px",
-      border: "2px solid #FFFFFF",
-      borderRadius: "6px",
-      backgroundColor: "#145A32", // Lighter green for contrast
+    searchBar: {
+      width: "80%",
+      marginBottom: "20px",
     },
     input: {
       width: "100%",
       padding: "10px",
-      margin: "10px 0",
+      marginBottom: "10px",
       border: "2px solid #FFB612",
       borderRadius: "4px",
       backgroundColor: "#FFFFFF",
@@ -89,99 +76,55 @@ function App() {
       color: "#003B1F",
       border: "none",
       padding: "12px 24px",
-      margin: "10px 0",
+      margin: "10px",
       borderRadius: "6px",
       cursor: "pointer",
       fontWeight: "bold",
     },
-    buttonDisabled: {
-      backgroundColor: "#666666",
-      color: "#FFFFFF",
-      border: "none",
-      padding: "12px 24px",
-      margin: "10px 0",
-      borderRadius: "6px",
-      cursor: "not-allowed",
-      fontWeight: "bold",
-    },
-    responseBox: {
+    statsBox: {
+      width: "80%",
+      marginTop: "20px",
       padding: "10px",
       border: "2px solid #FFFFFF",
       borderRadius: "6px",
-      backgroundColor: "#FFFFFF",
-      color: "#003B1F",
-      overflowX: "auto",
-    },
-    fieldLines: {
-      position: "relative",
-      marginBottom: "20px",
-      borderBottom: "2px dashed #FFFFFF",
-      paddingBottom: "10px",
-    },
-    titleIcon: {
-      display: "inline-block",
-      backgroundColor: "#FFB612",
-      color: "#003B1F",
-      padding: "5px 10px",
-      borderRadius: "50%",
-      marginRight: "10px",
-      fontWeight: "bold",
+      backgroundColor: "#145A32",
+      color: "#FFFFFF",
     },
   };
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.header}>🏈 NFL Player Predication 🏈</h1>
-
-      <div style={styles.section}>
-        <div style={styles.fieldLines}>
-          <span style={styles.titleIcon}>1</span>
-          Upload Training Data
-        </div>
-        <input type="file" onChange={handleFileChange} style={styles.input} />
-        <button
-          onClick={handleTrain}
-          style={file ? styles.button : styles.buttonDisabled}
-          disabled={!file}
-        >
-          Train Model
-        </button>
-      </div>
-
-      <div style={styles.section}>
-        <div style={styles.fieldLines}>
-          <span style={styles.titleIcon}>2</span>
-          Test the Model
-        </div>
+      <h1 style={styles.header}>🏈 NFL Player Prediction 🏈</h1>
+      <div style={styles.searchBar}>
         <input
           type="text"
-          placeholder="Enter features, e.g., 1.2,3.4,5.6"
-          value={testData}
-          onChange={(e) => setTestData(e.target.value)}
+          placeholder="Enter player name"
+          value={playerName}
+          onChange={(e) => setPlayerName(e.target.value)}
           style={styles.input}
         />
-        <button
-          onClick={handleTest}
-          style={testData ? styles.button : styles.buttonDisabled}
-          disabled={!testData}
-        >
-          Test Model
+        <button onClick={handleSearch} style={styles.button}>
+          Search
         </button>
       </div>
-
-      <div style={styles.section}>
-        <div style={styles.fieldLines}>
-          <span style={styles.titleIcon}>3</span>
-          Response
+      {playerStats && (
+        <div style={styles.statsBox}>
+          <h3>Player Stats</h3>
+          <pre>{JSON.stringify(playerStats, null, 2)}</pre>
+          <button onClick={handlePredict} style={styles.button}>
+            Predict Future Stats
+          </button>
         </div>
-        {response && (
-          <div style={styles.responseBox}>
-            <pre>{JSON.stringify(response, null, 2)}</pre>
-          </div>
-        )}
-      </div>
+      )}
+      {predictedStats && (
+        <div style={styles.statsBox}>
+          <h3>Predicted Stats</h3>
+          <pre>{JSON.stringify(predictedStats, null, 2)}</pre>
+        </div>
+      )}
     </div>
   );
 }
 
 export default App;
+
