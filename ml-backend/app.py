@@ -22,12 +22,23 @@ BASE_URL = "https://www.thesportsdb.com/api/v1/json"
 def root():
     return {"message": "Welcome to the Sports Stats Backend"}
 
-# Search player stats endpoint
+
+#Grabs the basic Info about the player that is searched
 @app.get("/player-stats/{player_name}")
 def get_player_stats(player_name: str):
+    """
+    Fetch player statistics by player name from an external API.
+
+    Args:
+        player_name (str): Name of the player to search for.
+
+    Returns:
+        dict: Player statistics or error message if no player is found.
+    """
     try:
-        # Search for player by name using TheSportsDB
+        
         response = requests.get(f"{BASE_URL}/{API_KEY}/searchplayers.php", params={"p": player_name})
+
         
         if response.status_code == 200:
             data = response.json()
@@ -36,8 +47,8 @@ def get_player_stats(player_name: str):
             
             if not players:
                 return {"message": f"No player found with the name '{player_name}'"}
-            
-            
+
+           
             player_data = []
             for player in players:
                 player_data.append({
@@ -49,13 +60,19 @@ def get_player_stats(player_name: str):
                     "strNationality": player.get("strNationality"),
                     "strDescriptionEN": player.get("strDescriptionEN"),
                 })
+
             
             return {"players": player_data}
         else:
+            
             raise HTTPException(status_code=500, detail=f"Failed to fetch data. Status code: {response.status_code}")
     except Exception as e:
+        
         raise HTTPException(status_code=500, detail=f"Error fetching player data: {e}")
+    
 
+
+#Grabs Numerical stats of the player that was searched
 @app.get("/player/details/{player_id}")
 def get_player_details(player_id: str):
     try:
