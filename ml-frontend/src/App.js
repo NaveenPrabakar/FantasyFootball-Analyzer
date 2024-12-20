@@ -15,9 +15,10 @@ function App() {
     try {
       const res = await axios.get(`http://127.0.0.1:8000/player-stats/${playerName}`);
       setPlayerStats(res.data);
-      setPredictedStats(null); // Reset predicted stats on new search
+      setPredictedStats(null);
     } catch (error) {
-      alert("Error fetching player stats: " + error.response?.data?.detail || error.message);
+      alert("Error fetching player stats: " + (error.response?.data?.detail || error.message));
+      setPlayerStats(null);
     }
   };
 
@@ -29,11 +30,11 @@ function App() {
 
     try {
       const res = await axios.post(`http://127.0.0.1:8000/predict-stats/`, {
-        playerName: playerStats.name,
+        playerName: playerStats.strPlayer,
       });
       setPredictedStats(res.data);
     } catch (error) {
-      alert("Error predicting stats: " + error.response?.data?.detail || error.message);
+      alert("Error predicting stats: " + (error.response?.data?.detail || error.message));
     }
   };
 
@@ -90,6 +91,25 @@ function App() {
       backgroundColor: "#145A32",
       color: "#FFFFFF",
     },
+    table: {
+      width: "100%",
+      marginTop: "20px",
+      borderCollapse: "collapse",
+      textAlign: "left",
+    },
+    th: {
+      padding: "10px",
+      backgroundColor: "#FFB612",
+    },
+    td: {
+      padding: "10px",
+      borderBottom: "1px solid #ddd",
+    },
+    img: {
+      width: "150px",
+      borderRadius: "50%",
+      marginBottom: "15px",
+    },
   };
 
   return (
@@ -107,15 +127,39 @@ function App() {
           Search
         </button>
       </div>
+
       {playerStats && (
         <div style={styles.statsBox}>
           <h3>Player Stats</h3>
-          <pre>{JSON.stringify(playerStats, null, 2)}</pre>
+          <div style={{ textAlign: "center" }}>
+            <h2>{playerStats.strPlayer}</h2>
+          </div>
+          <table style={styles.table}>
+            <thead>
+              <tr>
+                <th style={styles.th}>Team</th>
+                <th style={styles.th}>Position</th>
+                <th style={styles.th}>Date of Birth</th>
+                <th style={styles.th}>Nationality</th>
+                <th style={styles.th}>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={styles.td}>{playerStats.strTeam || "N/A"}</td>
+                <td style={styles.td}>{playerStats.strPosition || "N/A"}</td>
+                <td style={styles.td}>{playerStats.dateBorn || "N/A"}</td>
+                <td style={styles.td}>{playerStats.strNationality || "N/A"}</td>
+                <td style={styles.td}>{playerStats.strDescriptionEN || "No description available"}</td>
+              </tr>
+            </tbody>
+          </table>
           <button onClick={handlePredict} style={styles.button}>
             Predict Future Stats
           </button>
         </div>
       )}
+
       {predictedStats && (
         <div style={styles.statsBox}>
           <h3>Predicted Stats</h3>
@@ -127,4 +171,3 @@ function App() {
 }
 
 export default App;
-
