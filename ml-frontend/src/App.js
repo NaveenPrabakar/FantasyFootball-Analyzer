@@ -13,9 +13,13 @@ function App() {
     }
 
     try {
+
+
       const res = await axios.get(`http://127.0.0.1:8000/player-stats/${playerName}`);
-      setPlayerStats(res.data);
-      setPredictedStats(null);
+      console.log("This is the array" , res.data.players[0])
+      setPlayerStats(res.data.players[0]);
+      
+;      setPredictedStats(null);
     } catch (error) {
       alert("Error fetching player stats: " + (error.response?.data?.detail || error.message));
       setPlayerStats(null);
