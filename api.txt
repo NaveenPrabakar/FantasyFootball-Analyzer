@@ -1,0 +1,4 @@
+Potential data API to use:
+
+ - https://py.sportsdataverse.org/docs/nfl/ (I think it lacks player seasonal stats, but it has nextGen stats)
+ - sports reference library (I think it might be illegal because of web scrapping, but I'm not sure)

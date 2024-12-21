@@ -4,7 +4,7 @@ import axios from "axios";
 function App() {
   const [playerName, setPlayerName] = useState("");
   const [playerStats, setPlayerStats] = useState(null);
-  const [predictedStats, setPredictedStats] = useState(null);
+  const [fullStats, setFullStats] = useState(null);
 
   const handleSearch = async () => {
     if (!playerName) {
@@ -13,32 +13,27 @@ function App() {
     }
 
     try {
-
-
       const res = await axios.get(`http://127.0.0.1:8000/player-stats/${playerName}`);
-      console.log("This is the array" , res.data.players[0])
+      console.log("This is the array", res.data.players[0]);
       setPlayerStats(res.data.players[0]);
-      
-;      setPredictedStats(null);
+      setFullStats(null);
     } catch (error) {
       alert("Error fetching player stats: " + (error.response?.data?.detail || error.message));
       setPlayerStats(null);
     }
   };
 
-  const handlePredict = async () => {
+  const handleFullStats = async () => {
     if (!playerStats) {
       alert("Please search for a player first.");
       return;
     }
 
     try {
-      const res = await axios.post(`http://127.0.0.1:8000/predict-stats/`, {
-        playerName: playerStats.strPlayer,
-      });
-      setPredictedStats(res.data);
+      const res = await axios.get(`http://127.0.0.1:8000/full-stats/${playerStats.idPlayer}`);
+      setFullStats(res.data);
     } catch (error) {
-      alert("Error predicting stats: " + (error.response?.data?.detail || error.message));
+      alert("Error fetching full stats: " + (error.response?.data?.detail || error.message));
     }
   };
 
@@ -118,7 +113,7 @@ function App() {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.header}>🏈 NFL Player Prediction 🏈</h1>
+      <h1 style={styles.header}>🏈 NFL Player Stats 🏈</h1>
       <div style={styles.searchBar}>
         <input
           type="text"
@@ -158,16 +153,16 @@ function App() {
               </tr>
             </tbody>
           </table>
-          <button onClick={handlePredict} style={styles.button}>
-            Predict Future Stats
+          <button onClick={handleFullStats} style={styles.button}>
+            Full Stats
           </button>
         </div>
       )}
 
-      {predictedStats && (
+      {fullStats && (
         <div style={styles.statsBox}>
-          <h3>Predicted Stats</h3>
-          <pre>{JSON.stringify(predictedStats, null, 2)}</pre>
+          <h3>Full Stats</h3>
+          <pre>{JSON.stringify(fullStats, null, 2)}</pre>
         </div>
       )}
     </div>

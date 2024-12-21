@@ -39,6 +39,7 @@ def get_player_stats(player_name: str):
         
         response = requests.get(f"{BASE_URL}/{API_KEY}/searchplayers.php", params={"p": player_name})
 
+
         
         if response.status_code == 200:
             data = response.json()
@@ -77,7 +78,7 @@ def get_player_stats(player_name: str):
 def get_player_details(player_id: str):
     try:
         
-        response = requests.get(f"{BASE_URL}/{API_KEY}/lookupplayer.php", params={"id": player_id})
+        response = requests.get(f"{BASE_URL}/{API_KEY}/playerstats.php?", params={"id": player_id})
         
         if response.status_code == 200:
             data = response.json()
