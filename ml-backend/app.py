@@ -2,6 +2,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import requests
 
+import websearch
+
+
+
 
 app = FastAPI()
 
@@ -73,7 +77,7 @@ def get_player_stats(player_name: str):
     
 
 
-#Grabs Numerical stats of the player that was searched
+#Grabs a more detailed description of the player that was searched
 @app.get("/player/details/{player_id}")
 def get_player_details(player_id: str):
     try:
@@ -95,6 +99,6 @@ def get_player_details(player_id: str):
         raise HTTPException(status_code=500, detail=f"Error fetching player details: {e}")
 
 
-#Need to implement the data libaries later
+
 
 
