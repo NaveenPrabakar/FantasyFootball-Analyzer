@@ -97,6 +97,18 @@ def get_player_details(player_id: str):
             raise HTTPException(status_code=500, detail=f"Failed to fetch data. Status code: {response.status_code}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching player details: {e}")
+    
+
+
+@app.get("/player/career/{player_name}")
+def get_player_career(player_name: str):
+
+    #Implement logic to get the dataframe of the player's data
+    print()
+
+
+
+
 
 
 
