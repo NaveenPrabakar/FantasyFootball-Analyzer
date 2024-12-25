@@ -1,3 +1,3 @@
-ml-backend/.env
+ml-backend/MONGO_URI.env
 ml-backend/qb
 
