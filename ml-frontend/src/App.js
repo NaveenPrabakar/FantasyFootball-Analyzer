@@ -15,7 +15,7 @@ function App() {
 
     try {
       const res = await axios.get(
-        `http://127.0.0.1:8000/player-stats/${playerName}`
+        `http://0.0.0.0:8000/player-stats/${playerName}`
       );
       setPlayerStats(res.data.players[0]);
       setFullStats(null);
@@ -36,7 +36,7 @@ function App() {
   
     try {
       const res = await axios.get(
-        `http://127.0.0.1:8000/player/career/${playerName}`
+        `http://0.0.0.0:8000/player/career/${playerName}`
       );
 
       const statsList = res.data.data;
