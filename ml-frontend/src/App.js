@@ -38,10 +38,9 @@ function App() {
       const res = await axios.get(
         `http://127.0.0.1:8000/player/career/${playerName}`
       );
-      //Convert to array if it is not
 
-      const data = Array.isArray(res.data) ? res.data : [res.data];
-      setFullStats(data);
+      const statsList = res.data.data;
+      setFullStats(Array.isArray(statsList) ? statsList : []); //Make sure it is an array
     } catch (error) {
       alert(
         "Error fetching full stats: " +
@@ -101,22 +100,24 @@ function App() {
 
 
 
-{fullStats && (
-  <div className="statsBox animateStats">
-    <h3>Full Stats</h3>
-    <table className="table">
+{fullStats && fullStats.length > 0 && (
+  <div className="fullStatsBox">
+    <h3>Full Career Stats</h3>
+    <table className="statsTable">
       <thead>
         <tr>
-          {Object.keys(fullStats[0] || {}).map((key, index) => ( //FIX FRONT END , React can't process it
-            <th key={index}>{key}</th>
+          {}
+          {Object.keys(fullStats[0]).map((key) => (
+            <th key={key}>{key}</th>
           ))}
         </tr>
       </thead>
       <tbody>
-        {fullStats.map((stat, rowIndex) => (
-          <tr key={rowIndex}>
-            {Object.values(stat).map((value, colIndex) => (
-              <td key={colIndex}>{value || "N/A"}</td>
+        {}
+        {fullStats.map((stat, index) => (
+          <tr key={index}>
+            {Object.values(stat).map((value, i) => (
+              <td key={i}>{value}</td>
             ))}
           </tr>
         ))}
@@ -124,6 +125,7 @@ function App() {
     </table>
   </div>
 )}
+
 
       <div className="footballAnimation" />
     </div>
