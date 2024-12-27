@@ -6,6 +6,8 @@ import os
 import pandas as pd
 from fastapi.responses import JSONResponse
 import numpy as np
+from fastapi.responses import FileResponse
+import qb
 
 
 
@@ -20,7 +22,7 @@ app.add_middleware(
 )
 
 #Mongo DB Collection
-MONGO_URI = os.getenv("MONGO_URI")
+MONGO_URI = os.getenv("Mongo_URI")
 client = MongoClient(MONGO_URI)
 db = client['data_analysis']
 collection = db['nfl_files']
@@ -84,29 +86,6 @@ def get_player_stats(player_name: str):
         raise HTTPException(status_code=500, detail=f"Error fetching player data: {e}")
     
 
-
-#Grabs a more detailed description of the player that was searched
-@app.get("/player/details/{player_id}")
-def get_player_details(player_id: str):
-    try:
-        
-        response = requests.get(f"{BASE_URL}/{API_KEY}/playerstats.php?", params={"id": player_id})
-        
-        if response.status_code == 200:
-            data = response.json()
-            player_details = data.get("players", [])
-            
-            
-            if not player_details:
-                return {"message": f"No details found for player ID '{player_id}'"}
-            
-            return {"player_details": player_details[0]}
-        else:
-            raise HTTPException(status_code=500, detail=f"Failed to fetch data. Status code: {response.status_code}")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error fetching player details: {e}")
-    
-
 #Grabs the actual stats of the player
 @app.get("/player/career/{player_name}")
 def get_player_career(player_name: str):
@@ -141,6 +120,15 @@ def get_player_career(player_name: str):
                 record[key] = value.total_seconds() 
 
     return {"data": records}
+
+
+#Grabs the graphs assoicated with the position: qb
+@app.get("/serve_plot/{player_name}")
+def serve_plot(player_name: str):
+
+    le = qb.get_data(player_name)
+    plot_file_path = le[0]
+    return FileResponse(plot_file_path, media_type='image/png')
 
 
 
