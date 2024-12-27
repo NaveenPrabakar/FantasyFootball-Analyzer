@@ -56,8 +56,8 @@ function App() {
         Rate: stat.Rate,
       }));
 
-      setFullStats(Array.isArray(filteredStats) ? filteredStats : []); // Make sure it is an array
-      setShowFullStatsPage(true); // Navigate to the full stats page
+      setFullStats(Array.isArray(filteredStats) ? filteredStats : []); 
+      setShowFullStatsPage(true); 
     } catch (error) {
       alert(
         "Error fetching full stats: " +
