@@ -7,6 +7,74 @@ function App() {
   const [playerStats, setPlayerStats] = useState(null);
   const [fullStats, setFullStats] = useState(null);
   const [showFullStatsPage, setShowFullStatsPage] = useState(false); // Manage the full stats page view
+  const [plotImage, setPlotImage] = useState(null);
+  const [globalPlayer, setGlobalPlayer] = useState(null);
+
+
+  const fetchPlotImage = async () => {
+
+   //if the position is qb use this endpoint
+    if(globalPlayer.strPosition?.toLowerCase() === "quarterback"){
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`, {
+          responseType: 'blob', 
+        });
+        const imageObjectURL = URL.createObjectURL(response.data);
+        setPlotImage(imageObjectURL); 
+      } catch (error) {
+        console.error("Error fetching plot:", error);
+        setPlotImage(null); 
+      }
+    }
+    else if(globalPlayer.strPosition?.toLowerCase() === "rb"){
+
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`, {
+          responseType: 'blob', 
+        });
+        const imageObjectURL = URL.createObjectURL(response.data);
+        setPlotImage(imageObjectURL); 
+      } catch (error) {
+        console.error("Error fetching plot:", error);
+        setPlotImage(null); 
+      }
+      //Implement Later
+    }
+    else if(globalPlayer.strPosition?.toLowerCase() ==="wr"){
+
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`, {
+          responseType: 'blob', 
+        });
+        const imageObjectURL = URL.createObjectURL(response.data);
+        setPlotImage(imageObjectURL); 
+      } catch (error) {
+        console.error("Error fetching plot:", error);
+        setPlotImage(null); 
+      }
+
+      //Implement Later
+    }
+    else if(globalPlayer.strPosition?.toLowerCase() ==="te"){
+
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`, {
+          responseType: 'blob', 
+        });
+        const imageObjectURL = URL.createObjectURL(response.data);
+        setPlotImage(imageObjectURL); 
+      } catch (error) {
+        console.error("Error fetching plot:", error);
+        setPlotImage(null); 
+      }
+      //Implement Later
+    }
+    else{
+      console.error("Invalid position: ", globalPlayer.strPosition)
+    }
+    
+  };
+
 
   const handleSearch = async () => {
     if (!playerName) {
@@ -19,8 +87,10 @@ function App() {
         `http://127.0.0.1:8000/player-stats/${playerName}`
       );
       setPlayerStats(res.data.players[0]);
+      setGlobalPlayer(res.data.players[0]);
       setFullStats(null);
       setShowFullStatsPage(false); // Reset view when searching for a new player
+      
     } catch (error) {
       alert(
         "Error fetching player stats: " +
@@ -146,6 +216,22 @@ function App() {
           >
             Back to Player Stats
           </button>
+
+          
+          <button
+            onClick={fetchPlotImage} 
+            className="button"
+          >
+            Visuals
+          </button>
+
+          {plotImage && (
+            <div className="plotBox">
+              <h3>Player Stats Visualization</h3>
+              <img src={plotImage} alt="Player Stats Plot" className="plotImage" />
+            </div>
+          )}
+
         </div>
       )}
       <div className="footballAnimation" />
