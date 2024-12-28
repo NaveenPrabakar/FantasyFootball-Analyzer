@@ -19,6 +19,9 @@ collection = db['nfl_files']
 if not os.path.exists("saved_graphs"):
     os.makedirs("saved_graphs")
 
+if not os.path.exists("/tmp/saved_graphs"):
+    os.makedirs("/tmp/saved_graphs")
+
 
 
 
