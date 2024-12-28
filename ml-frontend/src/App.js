@@ -7,6 +7,121 @@ function App() {
   const [playerStats, setPlayerStats] = useState(null);
   const [fullStats, setFullStats] = useState(null);
   const [showFullStatsPage, setShowFullStatsPage] = useState(false); // Manage the full stats page view
+  const [plotImage, setPlotImage] = useState([]);
+  const [globalPlayer, setGlobalPlayer] = useState(null);
+  const [showImagesPage, setShowImagesPage] = useState(false);
+
+
+  const fetchPlotImage = async () => {
+
+   
+    if(globalPlayer.strPosition?.toLowerCase() === "quarterback"){
+      try {
+        
+        const response = await axios.get(`https://winter-break-project.onrender.com/serve_plot/${playerName}`);
+        
+        const filePaths = response.data.data;
+      
+        
+        const imageUrls = await Promise.all(
+          filePaths.map(async (filePath) => {
+            const imageResponse = await axios.get(filePath, { responseType: 'blob' });
+            return URL.createObjectURL(imageResponse.data);
+          })
+        );
+      
+        
+        setPlotImage(imageUrls);
+        setShowImagesPage(true); 
+      
+      } catch (error) {
+        console.error("Error fetching plot images:", error);
+        setPlotImage(null); 
+      }
+      
+    }
+    else if(globalPlayer.strPosition?.toLowerCase() === "rb"){
+
+      try {
+        
+        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`);
+        
+        const filePaths = response.data.data;
+      
+        
+        const imageUrls = await Promise.all(
+          filePaths.map(async (filePath) => {
+            const imageResponse = await axios.get(filePath, { responseType: 'blob' });
+            return URL.createObjectURL(imageResponse.data);
+          })
+        );
+      
+        
+        setPlotImage(imageUrls);
+      
+      } catch (error) {
+        console.error("Error fetching plot images:", error);
+        setPlotImage(null); 
+      }
+      //Implement Later
+    }
+    else if(globalPlayer.strPosition?.toLowerCase() ==="wr"){
+
+      try {
+        
+        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`);
+        
+        const filePaths = response.data.data;
+      
+        
+        const imageUrls = await Promise.all(
+          filePaths.map(async (filePath) => {
+            const imageResponse = await axios.get(filePath, { responseType: 'blob' });
+            return URL.createObjectURL(imageResponse.data);
+          })
+        );
+      
+        
+        setPlotImage(imageUrls);
+      
+      } catch (error) {
+        console.error("Error fetching plot images:", error);
+        setPlotImage(null); 
+      }
+
+      //Implement Later
+    }
+    else if(globalPlayer.strPosition?.toLowerCase() ==="te"){
+
+      try {
+        
+        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`);
+        
+        const filePaths = response.data.data;
+      
+        
+        const imageUrls = await Promise.all(
+          filePaths.map(async (filePath) => {
+            const imageResponse = await axios.get(filePath, { responseType: 'blob' });
+            return URL.createObjectURL(imageResponse.data);
+          })
+        );
+      
+        
+        setPlotImage(imageUrls);
+      
+      } catch (error) {
+        console.error("Error fetching plot images:", error);
+        setPlotImage(null); 
+      }
+      //Implement Later
+    }
+    else{
+      console.error("Invalid position: ", globalPlayer.strPosition)
+    }
+    
+  };
+
 
   const handleSearch = async () => {
     if (!playerName) {
@@ -19,8 +134,10 @@ function App() {
         `https://winter-break-project.onrender.com/player-stats/${playerName}`
       );
       setPlayerStats(res.data.players[0]);
+      setGlobalPlayer(res.data.players[0]);
       setFullStats(null);
       setShowFullStatsPage(false); // Reset view when searching for a new player
+      
     } catch (error) {
       alert(
         "Error fetching player stats: " +
@@ -56,8 +173,8 @@ function App() {
         Rate: stat.Rate,
       }));
 
-      setFullStats(Array.isArray(filteredStats) ? filteredStats : []); // Make sure it is an array
-      setShowFullStatsPage(true); // Navigate to the full stats page
+      setFullStats(Array.isArray(filteredStats) ? filteredStats : []); 
+      setShowFullStatsPage(true); 
     } catch (error) {
       alert(
         "Error fetching full stats: " +
@@ -146,9 +263,39 @@ function App() {
           >
             Back to Player Stats
           </button>
+
+          
+          <button
+            onClick={fetchPlotImage} 
+            className="button"
+          >
+            Visuals
+          </button>
+
+  
+
         </div>
       )}
       <div className="footballAnimation" />
+      
+      {showImagesPage && (
+        <div className="imagesPage">
+          <h3>Player Stats Visualizations</h3>
+          <div className="imageGallery">
+            {plotImage.length > 0 ? (
+              plotImage.map((url, index) => (
+                <img key={index} src={url} alt={`Player Stats Plot ${index + 1}`} className="plotImage" />
+              ))
+            ) : (
+              <p>No images available.</p>
+            )}
+          </div>
+          <button onClick={() => setShowImagesPage(false)} className="button">
+            Back to Stats
+          </button>
+        </div>
+      )}
+
     </div>
   );
 }

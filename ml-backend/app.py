@@ -6,6 +6,8 @@ import os
 import pandas as pd
 from fastapi.responses import JSONResponse
 import numpy as np
+from fastapi.responses import FileResponse
+import qb
 
 
 
@@ -84,29 +86,6 @@ def get_player_stats(player_name: str):
         raise HTTPException(status_code=500, detail=f"Error fetching player data: {e}")
     
 
-
-#Grabs a more detailed description of the player that was searched
-@app.get("/player/details/{player_id}")
-def get_player_details(player_id: str):
-    try:
-        
-        response = requests.get(f"{BASE_URL}/{API_KEY}/playerstats.php?", params={"id": player_id})
-        
-        if response.status_code == 200:
-            data = response.json()
-            player_details = data.get("players", [])
-            
-            
-            if not player_details:
-                return {"message": f"No details found for player ID '{player_id}'"}
-            
-            return {"player_details": player_details[0]}
-        else:
-            raise HTTPException(status_code=500, detail=f"Failed to fetch data. Status code: {response.status_code}")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error fetching player details: {e}")
-    
-
 #Grabs the actual stats of the player
 @app.get("/player/career/{player_name}")
 def get_player_career(player_name: str):
@@ -141,6 +120,31 @@ def get_player_career(player_name: str):
                 record[key] = value.total_seconds() 
 
     return {"data": records}
+
+
+
+@app.get("/serve_plot/{player_name}")
+def serve_plot(player_name: str):
+    le = qb.get_data(player_name)
+    
+    plot_file_urls = [f"https://winter-break-project.onrender.com/serves_plot/{file_path}" for file_path in le]
+
+    return {"data": plot_file_urls}
+
+
+@app.get("/serves_plot/{filename:path}")
+def serve_image(filename: str):
+
+    file_path = filename  
+    
+    
+    if not os.path.isfile(file_path):
+        raise HTTPException(status_code=404, detail="File not found")
+
+    return FileResponse(file_path, media_type='image/png')
+
+
+
 
 
 
