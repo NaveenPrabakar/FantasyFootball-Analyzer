@@ -22,7 +22,7 @@ app.add_middleware(
 )
 
 #Mongo DB Collection
-MONGO_URI = os.getenv("Mongo_URI")
+MONGO_URI = os.getenv("MONGO_URI")
 client = MongoClient(MONGO_URI)
 db = client['data_analysis']
 collection = db['nfl_files']
@@ -122,13 +122,29 @@ def get_player_career(player_name: str):
     return {"data": records}
 
 
-#Grabs the graphs assoicated with the position: qb
+
 @app.get("/serve_plot/{player_name}")
 def serve_plot(player_name: str):
-
     le = qb.get_data(player_name)
-    plot_file_path = le[0]
-    return FileResponse(plot_file_path, media_type='image/png')
+    
+    plot_file_urls = [f"http://127.0.0.1:8000/serves_plot/{file_path}" for file_path in le]
+
+    return {"data": plot_file_urls}
+
+
+@app.get("/serves_plot/{filename:path}")
+def serve_image(filename: str):
+
+    file_path = filename  
+    
+    
+    if not os.path.isfile(file_path):
+        raise HTTPException(status_code=404, detail="File not found")
+
+    return FileResponse(file_path, media_type='image/png')
+
+
+
 
 
 

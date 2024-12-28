@@ -206,3 +206,20 @@ th {
   background-color: #45a049;
 }
 
+
+.plotBox {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 20px; 
+  justify-content: center; 
+  padding: 20px;
+}
+
+.plotImage {
+  width: 250px; 
+  height: auto; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  object-fit: cover; 
+}
+

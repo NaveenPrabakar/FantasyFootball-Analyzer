@@ -7,35 +7,60 @@ function App() {
   const [playerStats, setPlayerStats] = useState(null);
   const [fullStats, setFullStats] = useState(null);
   const [showFullStatsPage, setShowFullStatsPage] = useState(false); // Manage the full stats page view
-  const [plotImage, setPlotImage] = useState(null);
+  const [plotImage, setPlotImage] = useState([]);
   const [globalPlayer, setGlobalPlayer] = useState(null);
+  const [showImagesPage, setShowImagesPage] = useState(false);
 
 
   const fetchPlotImage = async () => {
 
-   //if the position is qb use this endpoint
+   
     if(globalPlayer.strPosition?.toLowerCase() === "quarterback"){
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`, {
-          responseType: 'blob', 
-        });
-        const imageObjectURL = URL.createObjectURL(response.data);
-        setPlotImage(imageObjectURL); 
+        
+        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`);
+        
+        const filePaths = response.data.data;
+      
+        
+        const imageUrls = await Promise.all(
+          filePaths.map(async (filePath) => {
+            const imageResponse = await axios.get(filePath, { responseType: 'blob' });
+            return URL.createObjectURL(imageResponse.data);
+          })
+        );
+      
+        
+        setPlotImage(imageUrls);
+        setShowImagesPage(true); 
+      
       } catch (error) {
-        console.error("Error fetching plot:", error);
+        console.error("Error fetching plot images:", error);
         setPlotImage(null); 
       }
+      
     }
     else if(globalPlayer.strPosition?.toLowerCase() === "rb"){
 
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`, {
-          responseType: 'blob', 
-        });
-        const imageObjectURL = URL.createObjectURL(response.data);
-        setPlotImage(imageObjectURL); 
+        
+        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`);
+        
+        const filePaths = response.data.data;
+      
+        
+        const imageUrls = await Promise.all(
+          filePaths.map(async (filePath) => {
+            const imageResponse = await axios.get(filePath, { responseType: 'blob' });
+            return URL.createObjectURL(imageResponse.data);
+          })
+        );
+      
+        
+        setPlotImage(imageUrls);
+      
       } catch (error) {
-        console.error("Error fetching plot:", error);
+        console.error("Error fetching plot images:", error);
         setPlotImage(null); 
       }
       //Implement Later
@@ -43,13 +68,24 @@ function App() {
     else if(globalPlayer.strPosition?.toLowerCase() ==="wr"){
 
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`, {
-          responseType: 'blob', 
-        });
-        const imageObjectURL = URL.createObjectURL(response.data);
-        setPlotImage(imageObjectURL); 
+        
+        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`);
+        
+        const filePaths = response.data.data;
+      
+        
+        const imageUrls = await Promise.all(
+          filePaths.map(async (filePath) => {
+            const imageResponse = await axios.get(filePath, { responseType: 'blob' });
+            return URL.createObjectURL(imageResponse.data);
+          })
+        );
+      
+        
+        setPlotImage(imageUrls);
+      
       } catch (error) {
-        console.error("Error fetching plot:", error);
+        console.error("Error fetching plot images:", error);
         setPlotImage(null); 
       }
 
@@ -58,13 +94,24 @@ function App() {
     else if(globalPlayer.strPosition?.toLowerCase() ==="te"){
 
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`, {
-          responseType: 'blob', 
-        });
-        const imageObjectURL = URL.createObjectURL(response.data);
-        setPlotImage(imageObjectURL); 
+        
+        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`);
+        
+        const filePaths = response.data.data;
+      
+        
+        const imageUrls = await Promise.all(
+          filePaths.map(async (filePath) => {
+            const imageResponse = await axios.get(filePath, { responseType: 'blob' });
+            return URL.createObjectURL(imageResponse.data);
+          })
+        );
+      
+        
+        setPlotImage(imageUrls);
+      
       } catch (error) {
-        console.error("Error fetching plot:", error);
+        console.error("Error fetching plot images:", error);
         setPlotImage(null); 
       }
       //Implement Later
@@ -225,16 +272,30 @@ function App() {
             Visuals
           </button>
 
-          {plotImage && (
-            <div className="plotBox">
-              <h3>Player Stats Visualization</h3>
-              <img src={plotImage} alt="Player Stats Plot" className="plotImage" />
-            </div>
-          )}
+  
 
         </div>
       )}
       <div className="footballAnimation" />
+      
+      {showImagesPage && (
+        <div className="imagesPage">
+          <h3>Player Stats Visualizations</h3>
+          <div className="imageGallery">
+            {plotImage.length > 0 ? (
+              plotImage.map((url, index) => (
+                <img key={index} src={url} alt={`Player Stats Plot ${index + 1}`} className="plotImage" />
+              ))
+            ) : (
+              <p>No images available.</p>
+            )}
+          </div>
+          <button onClick={() => setShowImagesPage(false)} className="button">
+            Back to Stats
+          </button>
+        </div>
+      )}
+
     </div>
   );
 }
