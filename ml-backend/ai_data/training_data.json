@@ -1,0 +1,126 @@
+[
+    {
+        "text_input": "Player: Peyton Manning, Passing Yards: 5477, Touchdowns: 55, Interceptions: 10, Completion Percentage: 68.3%",
+        "output": "Performance Grade: A+"
+    },
+    {
+        "text_input": "Player: Aaron Rodgers, Passing Yards: 4128, Touchdowns: 40, Interceptions: 7, Completion Percentage: 68.9%",
+        "output": "Performance Grade: A"
+    },
+    {
+        "text_input": "Player: Drew Brees, Passing Yards: 5476, Touchdowns: 46, Interceptions: 14, Completion Percentage: 71.2%",
+        "output": "Performance Grade: A+"
+    },
+    {
+        "text_input": "Player: Jameis Winston, Passing Yards: 5109, Touchdowns: 33, Interceptions: 30, Completion Percentage: 60.7%",
+        "output": "Performance Grade: C+"
+    },
+    {
+        "text_input": "Player: Lamar Jackson, Passing Yards: 3127, Touchdowns: 36, Interceptions: 6, Completion Percentage: 66.1%",
+        "output": "Performance Grade: A+"
+    },
+    {
+        "text_input": "Player: Cam Newton, Passing Yards: 3892, Touchdowns: 35, Interceptions: 10, Completion Percentage: 59.8%",
+        "output": "Performance Grade: A"
+    },
+    {
+        "text_input": "Player: Josh Allen, Passing Yards: 4407, Touchdowns: 36, Interceptions: 15, Completion Percentage: 63.3%",
+        "output": "Performance Grade: A-"
+    },
+    {
+        "text_input": "Player: Dak Prescott, Passing Yards: 4902, Touchdowns: 30, Interceptions: 11, Completion Percentage: 65.1%",
+        "output": "Performance Grade: B+"
+    },
+    {
+        "text_input": "Player: Baker Mayfield, Passing Yards: 3810, Touchdowns: 22, Interceptions: 21, Completion Percentage: 59.4%",
+        "output": "Performance Grade: C"
+    },
+    {
+        "text_input": "Player: Russell Wilson, Passing Yards: 4212, Touchdowns: 40, Interceptions: 13, Completion Percentage: 68.8%",
+        "output": "Performance Grade: A"
+    },
+    {
+        "text_input": "Player: Kirk Cousins, Passing Yards: 4265, Touchdowns: 35, Interceptions: 10, Completion Percentage: 69.1%",
+        "output": "Performance Grade: A-"
+    },
+    {
+        "text_input": "Player: Tom Brady, Passing Yards: 4633, Touchdowns: 40, Interceptions: 12, Completion Percentage: 67.4%",
+        "output": "Performance Grade: A"
+    },
+    {
+        "text_input": "Player: Justin Herbert, Passing Yards: 5014, Touchdowns: 38, Interceptions: 15, Completion Percentage: 67.8%",
+        "output": "Performance Grade: A"
+    },
+    {
+        "text_input": "Player: Patrick Mahomes, Passing Yards: 5250, Touchdowns: 41, Interceptions: 12, Completion Percentage: 66.1%",
+        "output": "Performance Grade: A+"
+    },
+    {
+        "text_input": "Player: Joe Flacco, Passing Yards: 3205, Touchdowns: 20, Interceptions: 12, Completion Percentage: 62.3%",
+        "output": "Performance Grade: B-"
+    },
+    {
+        "text_input": "Player: Carson Wentz, Passing Yards: 4023, Touchdowns: 27, Interceptions: 7, Completion Percentage: 64.4%",
+        "output": "Performance Grade: B+"
+    },
+    {
+        "text_input": "Player: Ben Roethlisberger, Passing Yards: 5090, Touchdowns: 34, Interceptions: 16, Completion Percentage: 67.0%",
+        "output": "Performance Grade: A-"
+    },
+    {
+        "text_input": "Player: Eli Manning, Passing Yards: 3395, Touchdowns: 21, Interceptions: 11, Completion Percentage: 63.0%",
+        "output": "Performance Grade: B"
+    },
+    {
+        "text_input": "Player: Matt Ryan, Passing Yards: 4909, Touchdowns: 35, Interceptions: 7, Completion Percentage: 69.9%",
+        "output": "Performance Grade: A"
+    },
+    {
+        "text_input": "Player: Jared Goff, Passing Yards: 4688, Touchdowns: 32, Interceptions: 12, Completion Percentage: 67.0%",
+        "output": "Performance Grade: A-"
+    },
+    {
+        "text_input": "Player: Derek Carr, Passing Yards: 4049, Touchdowns: 27, Interceptions: 9, Completion Percentage: 67.3%",
+        "output": "Performance Grade: B+"
+    },
+    {
+        "text_input": "Player: Ryan Tannehill, Passing Yards: 3819, Touchdowns: 33, Interceptions: 7, Completion Percentage: 65.5%",
+        "output": "Performance Grade: A-"
+    },
+    {
+        "text_input": "Player: Philip Rivers, Passing Yards: 4615, Touchdowns: 32, Interceptions: 12, Completion Percentage: 68.3%",
+        "output": "Performance Grade: A-"
+    },
+    {
+        "text_input": "Player: Andy Dalton, Passing Yards: 3494, Touchdowns: 25, Interceptions: 14, Completion Percentage: 62.5%",
+        "output": "Performance Grade: B"
+    },
+    {
+        "text_input": "Player: Teddy Bridgewater, Passing Yards: 3200, Touchdowns: 15, Interceptions: 10, Completion Percentage: 60.0%",
+        "output": "Performance Grade: C"
+    },
+    {
+        "text_input": "Player: Sam Darnold, Passing Yards: 3201, Touchdowns: 16, Interceptions: 14, Completion Percentage: 61.2%",
+        "output": "Performance Grade: C"
+    },
+    {
+        "text_input": "Player: Mitch Trubisky, Passing Yards: 2900, Touchdowns: 10, Interceptions: 12, Completion Percentage: 58.4%",
+        "output": "Performance Grade: D"
+    },
+    {
+        "text_input": "Player: Blake Bortles, Passing Yards: 2750, Touchdowns: 11, Interceptions: 15, Completion Percentage: 57.3%",
+        "output": "Performance Grade: D"
+    },
+    {
+        "text_input": "Player: Mark Sanchez, Passing Yards: 2200, Touchdowns: 7, Interceptions: 14, Completion Percentage: 55.8%",
+        "output": "Performance Grade: F"
+    },
+    {
+        "text_input": "Player: Geno Smith, Passing Yards: 2500, Touchdowns: 9, Interceptions: 16, Completion Percentage: 54.9%",
+        "output": "Performance Grade: F"
+    },
+    {
+        "text_input": "Player: Nick Foles, Passing Yards: 2400, Touchdowns: 8, Interceptions: 13, Completion Percentage: 56.3%",
+        "output": "Performance Grade: F"
+    }
+]

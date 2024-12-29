@@ -32,12 +32,14 @@ def fine_tune():
 
     
 
-    #Visualize the Loss curve of the tuned model, adjust batch_size for improvement if the loss is to great
+    #Visualize the Loss curve of the tuned model
     result = operation.result()
 
     snapshots = pd.DataFrame(result.tuning_task.snapshots)
 
     sns.lineplot(data=snapshots, x = 'epoch', y='mean_loss')
+
+
 
 
 
