@@ -18,7 +18,7 @@ function App() {
     if(globalPlayer.strPosition?.toLowerCase() === "quarterback"){
       try {
         
-        const response = await axios.get(`http://127.0.0.1:8000/serve_plot/${playerName}`);
+        const response = await axios.get(`https://winter-break-project.onrender.com/serve_plot/${playerName}`);
         
         const filePaths = response.data.data;
       
