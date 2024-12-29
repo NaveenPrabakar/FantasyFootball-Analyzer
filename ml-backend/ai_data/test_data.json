@@ -1,0 +1,34 @@
+[
+    {
+        "text_input": "Player: Deshaun Watson, Passing Yards: 4500, Touchdowns: 33, Interceptions: 7, Completion Percentage: 67.0%",
+        "expected_output": "Performance Grade: A-"
+    },
+    {
+        "text_input": "Player: Kyler Murray, Passing Yards: 3921, Touchdowns: 26, Interceptions: 12, Completion Percentage: 66.3%",
+        "expected_output": "Performance Grade: B+"
+    },
+    {
+        "text_input": "Player: Ryan Fitzpatrick, Passing Yards: 3400, Touchdowns: 20, Interceptions: 13, Completion Percentage: 62.8%",
+        "expected_output": "Performance Grade: B"
+    },
+    {
+        "text_input": "Player: Tua Tagovailoa, Passing Yards: 3800, Touchdowns: 22, Interceptions: 6, Completion Percentage: 68.5%",
+        "expected_output": "Performance Grade: A-"
+    },
+    {
+        "text_input": "Player: Trevor Lawrence, Passing Yards: 4200, Touchdowns: 28, Interceptions: 10, Completion Percentage: 67.6%",
+        "expected_output": "Performance Grade: B+"
+    },
+    {
+        "text_input": "Player: Jimmy Garoppolo, Passing Yards: 3300, Touchdowns: 20, Interceptions: 9, Completion Percentage: 64.2%",
+        "expected_output": "Performance Grade: B"
+    },
+    {
+        "text_input": "Player: Carson Palmer, Passing Yards: 4700, Touchdowns: 34, Interceptions: 12, Completion Percentage: 66.4%",
+        "expected_output": "Performance Grade: A-"
+    },
+    {
+        "text_input": "Player: Philip Rivers, Passing Yards: 4680, Touchdowns: 33, Interceptions: 14, Completion Percentage: 65.8%",
+        "expected_output": "Performance Grade: A-"
+    }
+]
