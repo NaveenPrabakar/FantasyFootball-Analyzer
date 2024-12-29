@@ -75,7 +75,7 @@ def td_vs_int(df, playername):
     plt.grid(True, linestyle='--', alpha=0.7)
     plt.tight_layout()
 
-    plot_file_path = f"saved_graphs/{playername}.png"
+    plot_file_path = f"/tmp/saved_graphs/{playername}.png"
     plt.savefig(plot_file_path)
 
     return plot_file_path
@@ -114,7 +114,7 @@ def bar(filtered_data, playername):
     plt.legend()
     plt.tight_layout()
 
-    plot_file_path = f"saved_graphs/{playername}(1).png"
+    plot_file_path = f"/tmp/saved_graphs/{playername}(1).png"
     plt.savefig(plot_file_path)
 
     return plot_file_path
@@ -138,7 +138,7 @@ def last(playername, global_df):
         plt.annotate(txt, (global_df['Yds'][i], global_df['QBR'][i]), textcoords="offset points", xytext=(5,5), ha='left')
 
     
-    plot_file_path = f"saved_graphs/{playername}(2).png"
+    plot_file_path = f"/tmp/saved_graphs/{playername}(2).png"
     plt.savefig(plot_file_path)
 
     return plot_file_path
