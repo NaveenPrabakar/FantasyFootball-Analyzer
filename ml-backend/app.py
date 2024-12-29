@@ -127,7 +127,7 @@ def get_player_career(player_name: str):
 def serve_plot(player_name: str):
     le = qb.get_data(player_name)
     
-    plot_file_urls = [f"https://winter-break-project.onrender.com/serves_plot/{file_path}" for file_path in le]
+    plot_file_urls = [f"http://127.0.0.1:8000/serves_plot/{file_path}" for file_path in le]
 
     return {"data": plot_file_urls}
 

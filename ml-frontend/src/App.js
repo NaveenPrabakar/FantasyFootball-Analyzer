@@ -32,6 +32,8 @@ function App() {
       
         
         setPlotImage(imageUrls);
+        setShowFullStatsPage(false);
+        setPlayerStats(null);
         setShowImagesPage(true); 
       
       } catch (error) {
@@ -186,7 +188,65 @@ function App() {
 
   return (
     <div className="container">
-      {!showFullStatsPage ? (
+      {showImagesPage && ( // Show only when showImagesPage is true
+        <div className="imagesPage">
+          {/* Added image gallery block */}
+          <h3>Player Stats Visualizations</h3>
+          <div className="imageGallery">
+            {plotImage.length > 0 ? (
+              plotImage.map((url, index) => (
+                <img
+                  key={index}
+                  src={url}
+                  alt={`Player Stats Plot ${index + 1}`}
+                  className="plotImage"
+                />
+              ))
+            ) : (
+              <p>No images available.</p>
+            )}
+          </div>
+          <button onClick={() => setShowImagesPage(false)} className="button">
+            Back to Stats
+          </button>
+        </div>
+      )}
+
+      {!showImagesPage && showFullStatsPage && (
+        <div className="fullStatsBox">
+          <h3>Full Career Stats</h3>
+          <table className="statsTable">
+            <thead>
+              <tr>
+                {Object.keys(fullStats[0]).map((key) => (
+                  <th key={key}>{key}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {fullStats.map((stat, index) => (
+                <tr key={index}>
+                  {Object.values(stat).map((value, i) => (
+                    <td key={i}>{value}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <button
+            onClick={() => setShowFullStatsPage(false)}
+            className="button"
+          >
+            Back to Player Stats
+          </button>
+          <button onClick={fetchPlotImage} className="button">
+            Visuals
+          </button>
+        </div>
+      )}
+
+      {!showImagesPage && !showFullStatsPage && (
+        // Main player stats page remains intact
         <>
           <h1 className="header">🏈 NFL Player Stats 🏈</h1>
           <div className="searchBar">
@@ -225,7 +285,8 @@ function App() {
                     <td>{playerStats.dateBorn || "N/A"}</td>
                     <td>{playerStats.strNationality || "N/A"}</td>
                     <td>
-                      {playerStats.strDescriptionEN || "No description available"}
+                      {playerStats.strDescriptionEN ||
+                        "No description available"}
                     </td>
                   </tr>
                 </tbody>
@@ -236,69 +297,9 @@ function App() {
             </div>
           )}
         </>
-      ) : (
-        <div className="fullStatsBox">
-          <h3>Full Career Stats</h3>
-          <table className="statsTable">
-            <thead>
-              <tr>
-                {Object.keys(fullStats[0]).map((key) => (
-                  <th key={key}>{key}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {fullStats.map((stat, index) => (
-                <tr key={index}>
-                  {Object.values(stat).map((value, i) => (
-                    <td key={i}>{value}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <button
-            onClick={() => setShowFullStatsPage(false)} 
-            className="button"
-          >
-            Back to Player Stats
-          </button>
-
-          
-          <button
-            onClick={fetchPlotImage} 
-            className="button"
-          >
-            Visuals
-          </button>
-
-  
-
-        </div>
       )}
-      <div className="footballAnimation" />
-      
-      {showImagesPage && (
-        <div className="imagesPage">
-          <h3>Player Stats Visualizations</h3>
-          <div className="imageGallery">
-            {plotImage.length > 0 ? (
-              plotImage.map((url, index) => (
-                <img key={index} src={url} alt={`Player Stats Plot ${index + 1}`} className="plotImage" />
-              ))
-            ) : (
-              <p>No images available.</p>
-            )}
-          </div>
-          <button onClick={() => setShowImagesPage(false)} className="button">
-            Back to Stats
-          </button>
-        </div>
-      )}
-
     </div>
   );
 }
 
 export default App;
-
