@@ -1,4 +1,5 @@
 import os
+import aws
 
 import pandas as pd
 import matplotlib
@@ -78,6 +79,8 @@ def td_vs_int(df, playername):
     plot_file_path = f"/tmp/saved_graphs/{playername}.png"
     plt.savefig(plot_file_path)
 
+    aws.upload_file(f"/tmp/saved_graphs/{playername}.png", "nflfootballwebsite", f"{playername}.png")
+
     return plot_file_path
 
 
@@ -117,6 +120,8 @@ def bar(filtered_data, playername):
     plot_file_path = f"/tmp/saved_graphs/{playername}(1).png"
     plt.savefig(plot_file_path)
 
+    aws.upload_file(f"/tmp/saved_graphs/{playername}(1).png", "nflfootballwebsite", f"{playername}(1).png")
+
     return plot_file_path
 
 
@@ -140,6 +145,8 @@ def last(playername, global_df):
     
     plot_file_path = f"/tmp/saved_graphs/{playername}(2).png"
     plt.savefig(plot_file_path)
+
+    aws.upload_file(f"/tmp/saved_graphs/{playername}(2).png", "nflfootballwebsite", f"{playername}(2).png")
 
     return plot_file_path
 

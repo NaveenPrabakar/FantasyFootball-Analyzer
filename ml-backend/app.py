@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 import numpy as np
 from fastapi.responses import FileResponse
 import qb
+import aws
 
 
 
@@ -34,7 +35,7 @@ BASE_URL = "https://www.thesportsdb.com/api/v1/json"
 # Root endpoint
 @app.get("/")
 def root():
-    return {"message": "Welcome to the Sports Statsssss Backend"}
+    return {"message": "Welcome to the Sports Stat Backend"}
 
 
 #Grabs the basic Info about the player that is searched
@@ -125,6 +126,22 @@ def get_player_career(player_name: str):
 
 @app.get("/serve_plot/{player_name}")
 def serve_plot(player_name: str):
+
+    if(aws.check_file_exists("nflfootballwebsite", f"{player_name}.png") and aws.check_file_exists("nflfootballwebsite", f"{player_name}(1).png") and 
+       aws.check_file_exists("nflfootballwebsite", f"{player_name}(2).png")):
+        
+        aws.download("nflfootballwebsite", f"{player_name}.png")
+        aws.download("nflfootballwebsite", f"{player_name}(1).png")
+        aws.download("nflfootballwebsite", f"{player_name}(2).png")
+
+        file_paths = [
+            f"https://winter-break-project.onrender.com/serves_plot/saved_graphs/{player_name}.png",
+            f"https://winter-break-project.onrender.com/serves_plot/saved_graphs/{player_name}(1).png",
+            f"https://winter-break-project.onrender.com/serves_plot/saved_graphs/{player_name}(2).png"
+        ]
+        
+        return {"data": file_paths}
+
     le = qb.get_data(player_name)
     
     plot_file_urls = [f"https://winter-break-project.onrender.com/serves_plot/{file_path}" for file_path in le]
