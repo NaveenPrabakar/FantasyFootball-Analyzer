@@ -107,6 +107,24 @@ def get_player_career(player_name: str):
     #Replace Nan with None so JSON can handle it
     retrieved_df = retrieved_df.applymap(lambda x: False if pd.isna(x) else x)
 
+    #Import qb stats
+    important_columns = [
+    "Season",
+    "Age",
+    "Team",
+    "Pos",
+    "G",
+    "Cmp",
+    "Att",
+    "Cmp%",
+    "Yds",
+    "TD",
+    "Int",
+    "Rate",
+    ]
+
+    retrieved_df = retrieved_df[important_columns]
+
     # Convert the DataFrame to a list of dictionaries
     records = retrieved_df.to_dict(orient="records")
 
