@@ -2,9 +2,12 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Poppins", sans-serif;
+  background: url('R.gif') no-repeat center center fixed;
+  background-size: cover;
   background-color: #001f3f;
   color: #ffffff;
   overflow-x: hidden;
+  animation: fadeIn 2s ease-in-out;
 }
 
 .container {
@@ -15,6 +18,7 @@ body {
   height: 100vh;
   text-align: center;
   position: relative;
+  animation: slideUp 1.5s ease-in-out;
 }
 
 .header {
@@ -22,11 +26,14 @@ body {
   margin-bottom: 20px;
   color: #ffb612;
   text-shadow: 2px 2px 4px #000000;
+  animation: fadeIn 2s ease-in-out;
 }
 
 .searchBar {
   width: 80%;
   margin-bottom: 20px;
+  animation: fadeIn 2s ease-in-out;
+  align-items: center;
 }
 
 .input {
@@ -36,7 +43,8 @@ body {
   border-radius: 8px;
   font-size: 1em;
   color: #001f3f;
-  margin-right: 10px;
+  margin-right: 10px;  
+  animation: slideUp 2s ease-in-out;
 }
 
 .button {
@@ -48,6 +56,7 @@ body {
   font-weight: bold;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
+  animation: fadeIn 1.5s ease-in-out;
 }
 
 .button:hover {
@@ -60,24 +69,26 @@ body {
   max-width: 1200px;
   padding: 20px;
   margin-top: 20px;
-  background: #002b55;
+  background: #4f4f4f;
   border-radius: 15px;
   box-shadow: 4px 4px 6px #000000, -2px -2px 4px #145a32;
   text-align: left;
-  overflow-x: auto; /* Enables horizontal scrolling for smaller screens */
+  overflow-x: auto;
+  animation: fadeIn 2s ease-in-out;
 }
 
 .statsBox h3 {
   margin-bottom: 15px;
   color: #ffb612;
   text-align: center;
+  animation: slideUp 2s ease-in-out;
 }
 
 .statsTable {
   width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
-  animation: fadeIn 0.5s ease-in-out;
+  animation: fadeIn 2s ease-in-out;
 }
 
 .statsTable th,
@@ -85,6 +96,7 @@ body {
   padding: 12px 15px;
   border: 1px solid #ddd;
   text-align: center;
+  animation: fadeIn 2s ease-in-out;
 }
 
 .statsTable th {
@@ -94,15 +106,15 @@ body {
 }
 
 .statsTable tr:nth-child(even) {
-  background-color: #003a5e;
+  background-color: #5a5a5a;
 }
 
 .statsTable tr:nth-child(odd) {
-  background-color: #002b55;
+  background-color: #3e3e3e;
 }
 
 .statsTable tr:hover {
-  background-color: #004974;
+  background-color: #8c8c8c;
 }
 
 @media (max-width: 768px) {
@@ -131,7 +143,7 @@ body {
 }
 
 .animateStats {
-  animation: fadeIn 1s ease-in-out;
+  animation: fadeIn 2s ease-in-out;
 }
 
 .footballAnimation {
@@ -149,6 +161,7 @@ body {
   font-size: 1.5em;
   color: #001f3f;
   text-align: center;
+  animation: slideUp 3s ease-in-out;
 }
 
 .footballAnimation::before {
@@ -170,26 +183,49 @@ body {
   }
 }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 .imageGallery {
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
   padding: 20px;
   justify-content: center;
+  animation: fadeIn 2s ease-in-out;
 }
 
 .plotImage {
-  width: 300px;
+  width: 550px;
   height: auto;
   border-radius: 10px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   object-fit: cover;
   transition: transform 0.3s ease-in-out;
+  animation: slideUp 1.5s ease-in-out;
 }
 
 .plotImage:hover {
   transform: scale(1.05);
 }
+
 
 
 

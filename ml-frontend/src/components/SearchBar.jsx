@@ -11,7 +11,20 @@ const SearchBar = ({ playerName, setPlayerName, onSearch }) => (
         className="input"
       />
       <button onClick={onSearch} className="button">
-        Search
+      <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <line x1="16" y1="16" x2="20" y2="20" />
+        </svg>
       </button>
     </div>
 
