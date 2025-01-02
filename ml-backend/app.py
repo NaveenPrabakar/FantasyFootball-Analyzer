@@ -9,6 +9,10 @@ import numpy as np
 from fastapi.responses import FileResponse
 import qb
 import aws
+import google.generativeai as genai
+
+
+genai.configure(api_key=os.getenv("GEMINI_KEY"))
 
 
 
@@ -177,6 +181,21 @@ def serve_image(filename: str):
         raise HTTPException(status_code=404, detail="File not found")
 
     return FileResponse(file_path, media_type='image/png')
+
+
+@app.get("/AI/{playername}")
+def ai_analysis(playername: str):
+
+    tuned_models = []
+    for i, m in zip(range(5), genai.list_tuned_models()):
+        tuned_models.append(m.name)
+
+    #Use the QB fine tune
+    model = genai.GenerativeModel(model_name=tuned_models[0])
+
+
+    
+
 
 
 
