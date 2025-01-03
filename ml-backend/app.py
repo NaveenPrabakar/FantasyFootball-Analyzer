@@ -145,7 +145,7 @@ def get_player_career(player_name: str):
     return {"data": records}
 
 
-
+#stores the images in temp folders, then calls api to retreive them
 @app.get("/serve_plot/{player_name}")
 def serve_plot(player_name: str):
 
@@ -170,7 +170,7 @@ def serve_plot(player_name: str):
 
     return {"data": plot_file_urls}
 
-
+#Gets the image to the front end
 @app.get("/serves_plot/{filename:path}")
 def serve_image(filename: str):
 
@@ -182,7 +182,7 @@ def serve_image(filename: str):
 
     return FileResponse(file_path, media_type='image/png')
 
-
+#Get a grade report of the player, season by season
 @app.get("/AI/{playername}")
 def ai_analysis(playername: str):
 
@@ -192,6 +192,60 @@ def ai_analysis(playername: str):
 
     #Use the QB fine tune
     model = genai.GenerativeModel(model_name=tuned_models[0])
+
+    player_data = collection.find_one({'_id': 'nfl_stats'})
+
+    retrieved_df = pd.DataFrame(player_data['data'])
+
+    retrieved_df = retrieved_df.applymap(lambda x: False if pd.isna(x) else x)
+
+    records = retrieved_df.to_dict(orient="records")
+
+    # Convert the JSON data into the desired format
+    converted_data = []
+
+    for entry in records:
+        player_name = f"Player: {playername}"  # Placeholder for player name, update as needed
+        passing_yards = entry["Yds"]
+        touchdowns = entry["TD"]
+        interceptions = entry["Int"]
+        completion_percentage = entry["Cmp%"]
+    
+        text_input = f"Player: {player_name}, Passing Yards: {passing_yards}, Touchdowns: {touchdowns}, Interceptions: {interceptions}, Completion Percentage: {completion_percentage}%"
+        converted_data.append({
+            "text_input": text_input
+        })
+
+    fin = []
+
+    for qb in converted_data:
+        test_input = qb["text_input"] 
+
+        result = model.generate_content(test_input)
+        result = result.text.strip()
+
+        fin.append(result)
+
+    cleaned_output = []
+    for item in fin:
+        # Split by newline to remove commentary, keep only the first line
+        cleaned_entry = item.split("\n")[0]
+        # Append the cleaned entry
+        cleaned_output.append(cleaned_entry)
+
+
+
+    return cleaned_output
+
+
+
+
+
+
+
+
+
+
 
 
     

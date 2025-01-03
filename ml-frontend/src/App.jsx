@@ -4,11 +4,13 @@ import {
   fetchPlayerStats,
   fetchFullStats,
   fetchPlotImage,
+  fetchCleanedOutput
 } from "./services/api";
 import SearchBar from "./components/SearchBar";
 import MainStatsPage from "./components/MainStatsPage";
 import FullStatsPage from "./components/FullStatsPage";
 import ImagesPage from "./components/ImagesPage";
+import ReportCardPage from "./components/ReportCardPage"
 import "./App.css";
 import axios from "axios";
 
@@ -20,6 +22,8 @@ function App() {
   const [plotImage, setPlotImage] = useState([]);
   const [globalPlayer, setGlobalPlayer] = useState(null);
   const [showImagesPage, setShowImagesPage] = useState(false);
+  const [cleanedOutput, setCleanedOutput] = useState([]); 
+  const [showReportCard, setShowReportCard] = useState(false);
 
   const handleSearch = async () => {
     if (!playerName) {
@@ -34,6 +38,17 @@ function App() {
       setShowFullStatsPage(false);
     } catch (error) {
       alert(`Error fetching player stats: ${error.message}`);
+    }
+  };
+
+  const handleFetchCleanedOutput = async () => {
+    try {
+      const response = await fetchCleanedOutput(playerName);
+      console.log(response.data)
+      setCleanedOutput(response.data); 
+      setShowReportCard(true);
+    } catch (error) {
+      alert(`Error fetching cleaned output: ${error.message}`);
     }
   };
 
@@ -82,6 +97,11 @@ function App() {
           onBack={() => setShowFullStatsPage(false)}
           onVisuals={handleFetchPlotImage}
         />
+      ) : showReportCard ? (
+        <ReportCardPage
+          cleanedOutput={cleanedOutput}
+          onBack={() => setShowReportCard(false)}
+        />
       ) : (
         <>
           <h1 className="header">🏈 NFL Player Stats 🏈</h1>
@@ -90,6 +110,10 @@ function App() {
             setPlayerName={setPlayerName}
             onSearch={handleSearch}
           />
+          <button className="report-button" onClick={handleFetchCleanedOutput}>
+            Show Report Card
+          </button>
+
           {playerStats && (
             <MainStatsPage playerStats={playerStats} onFullStats={handleFullStats} />
           )}
