@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: "Poppins", sans-serif;
+  font-family: "Press Start 2P", monospace;
   background: url('R.gif') no-repeat center center fixed;
   background-size: cover;
   background-color: #001f3f;
@@ -34,6 +34,70 @@ body {
   margin-bottom: 20px;
   animation: fadeIn 2s ease-in-out;
   align-items: center;
+}
+
+.corner-gif {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  animation: fadeInPop 2s ease-in-out;
+  z-index: 10;
+}
+
+.corner-gif.top-left {
+  top: 10px;
+  left: 10px;
+  background-image: url('220018.gif'); 
+}
+
+.corner-gif.top-right {
+  top: 10px;
+  right: 10px;
+  background-image: url('fafc5da0-986b-41b2-8c7e-f26c003bfc81.gif'); 
+}
+
+.corner-gif.bottom-left {
+  bottom: 10px;
+  left: 10px;
+  background-image: url('giphy (1).gif'); 
+}
+
+.corner-gif.bottom-right {
+  bottom: 10px;
+  right: 10px;
+  background-image: url('giphy.gif'); 
+}
+
+.corner-gif.middle-left {
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  background-image: url('giphy (2).gif'); 
+}
+
+.corner-gif.middle-right {
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background-image: url('giphy (3).gif'); 
+}
+
+
+@keyframes fadeInPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .input {

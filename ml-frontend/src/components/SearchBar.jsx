@@ -11,7 +11,7 @@ const SearchBar = ({ playerName, setPlayerName, onSearch }) => (
         className="input"
       />
       <button onClick={onSearch} className="button">
-      <svg
+        <svg
           xmlns="http://www.w3.org/2000/svg"
           width="20"
           height="20"
@@ -28,6 +28,7 @@ const SearchBar = ({ playerName, setPlayerName, onSearch }) => (
       </button>
     </div>
 
+    
     <div className="animationContainer">
       <div className="player player-left">
         <div className="helmet"></div>
@@ -48,9 +49,19 @@ const SearchBar = ({ playerName, setPlayerName, onSearch }) => (
         <div className="leg left"></div>
         <div className="leg right"></div>
       </div>
+
+      
+      <div className="corner-gif top-left"></div>
+      <div className="corner-gif top-right"></div>
+      <div className="corner-gif bottom-left"></div>
+      <div className="corner-gif bottom-right"></div>
+      <div className="corner-gif middle-left"></div>
+      <div className="corner-gif middle-right"></div>
     </div>
   </div>
 );
+
+
 
 export default SearchBar;
 
