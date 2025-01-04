@@ -2,4 +2,5 @@ ml-backend/MONGO_URI.env
 ml-backend/qb
 ml-backend/rb
 ml-backend/__pycache__
+ml-backend/saved_graphs
 

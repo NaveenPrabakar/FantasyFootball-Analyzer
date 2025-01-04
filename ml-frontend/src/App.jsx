@@ -4,7 +4,8 @@ import {
   fetchPlayerStats,
   fetchFullStats,
   fetchPlotImage,
-  fetchCleanedOutput
+  fetchCleanedOutput,
+  fetchAnalysis
 } from "./services/api";
 import SearchBar from "./components/SearchBar";
 import MainStatsPage from "./components/MainStatsPage";
@@ -24,6 +25,7 @@ function App() {
   const [showImagesPage, setShowImagesPage] = useState(false);
   const [cleanedOutput, setCleanedOutput] = useState([]); 
   const [showReportCard, setShowReportCard] = useState(false);
+  const [analysis, setAnalysis] = useState([]);
 
   const handleSearch = async () => {
     if (!playerName) {
@@ -80,7 +82,11 @@ function App() {
         })
       );
 
+      const response2 = await fetchAnalysis(playerName)
+      const arr = response2.data;
+
       setPlotImage(imageUrls);
+      setAnalysis(arr);
       setShowImagesPage(true);
     } catch (error) {
       alert(`Error fetching plot images: ${error.message}`);
@@ -90,7 +96,11 @@ function App() {
   return (
     <div className="container">
       {showImagesPage ? (
-        <ImagesPage plotImage={plotImage} onBack={() => setShowImagesPage(false)} />
+        <ImagesPage
+        plotImage={plotImage}
+        analysis={analysis} 
+        onBack={() => setShowImagesPage(false)}
+      />
       ) : showFullStatsPage ? (
         <FullStatsPage
           fullStats={fullStats}

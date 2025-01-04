@@ -28,12 +28,6 @@ const FullStatsPage = ({ fullStats, onBack, onVisuals }) => (
     <button onClick={onVisuals} className="button">
       Visuals
     </button>
-      <div className="corner-gif top-left"></div>
-      <div className="corner-gif top-right"></div>
-      <div className="corner-gif bottom-left"></div>
-      <div className="corner-gif bottom-right"></div>
-      <div className="corner-gif middle-left"></div>
-      <div className="corner-gif middle-right"></div>
   </div>
 );
 

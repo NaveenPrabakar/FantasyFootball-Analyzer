@@ -10,6 +10,8 @@ from fastapi.responses import FileResponse
 import qb
 import aws
 import google.generativeai as genai
+import PIL
+from PIL import Image
 
 
 genai.configure(api_key=os.getenv("GEMINI_KEY"))
@@ -169,6 +171,35 @@ def serve_plot(player_name: str):
     plot_file_urls = [f"https://winter-break-project.onrender.com/serves_plot/{file_path}" for file_path in le]
 
     return {"data": plot_file_urls}
+
+#Prompt Engineer to get good analysis of qb graphs
+@app.get("/analyze/{player_name}")
+def prompt(player_name: str):
+    image_directory = [f"saved_graphs/{player_name}.png", f"saved_graphs/{player_name}(1).png", f"saved_graphs/{player_name}(2).png"]
+
+    prompt = (
+    "You are a professional QB Analyzer specializing in evaluating quarterbacks' performance "
+    "through advanced statistical analysis and visualizations. I have a graph that contains key "
+    "metrics of a quarterback's performance (e.g., passing yards, completion rate, touchdown-to-interception ratio, pocket presence). "
+    "Your task is to:\n"
+    "1. Analyze the graph in-depth and extract actionable insights.\n"
+    "2. Highlight the quarterback's strengths and weaknesses based on the data presented.\n"
+    "3. Identify any patterns, anomalies, or trends that might be critical for improving their game.\n"
+    "4. Summarize your analysis in a concise and structured way that can help coaches, analysts, or fans understand the player's performance.\n\n"
+    
+    "Begin your analysis by explicitly stating the focus of the graph and break down its implications with clear explanations. IN YOUR OUTPUT, ONLY INCLUDE THE ANALYSIS, and DO NOT INCLUDE MARKDOWN"
+    )
+
+    answers = []
+
+
+    for image in image_directory:
+        img = Image.open(image)
+
+        response = genai.GenerativeModel('gemini-1.5-flash').generate_content([prompt, img])
+        answers.append(response.text)
+
+    return answers
 
 #Gets the image to the front end
 @app.get("/serves_plot/{filename:path}")
