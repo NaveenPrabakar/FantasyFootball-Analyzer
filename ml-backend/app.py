@@ -4,21 +4,17 @@ import requests
 from pymongo import MongoClient
 import os
 import pandas as pd
-from fastapi.responses import JSONResponse
 import numpy as np
-from fastapi.responses import FileResponse
+from fastapi.responses import JSONResponse, FileResponse
 import qb
 import aws
 import google.generativeai as genai
-import PIL
 from PIL import Image
 
+# Configure generative AI
+genai.configure(api_key= os.getenv("GEMINI_KEY"))
 
-genai.configure(api_key=os.getenv("GEMINI_KEY"))
-
-
-
-
+# Initialize FastAPI app
 app = FastAPI()
 
 app.add_middleware(
@@ -28,180 +24,201 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#Mongo DB Collection
+# MongoDB Configuration
 MONGO_URI = os.getenv("MONGO_URI")
 client = MongoClient(MONGO_URI)
 db = client['data_analysis']
 collection = db['nfl_files']
 
-# TheSportsDB API configurations
-API_KEY = "3"  # Free User API Key
+# External API Configuration
+API_KEY = "3"
 BASE_URL = "https://www.thesportsdb.com/api/v1/json"
 
-# Root endpoint
+#QB Class
+class QB:
+    def __init__(self, player_name: str):
+        self.player_name = player_name
+
+    def get_player_stats(self):
+        """
+        Fetch player statistics by player name from an external API.
+        """
+        try:
+            response = requests.get(f"{BASE_URL}/{API_KEY}/searchplayers.php", params={"p": self.player_name})
+            if response.status_code == 200:
+                data = response.json()
+                players = data.get("player", [])
+                if not players:
+                    return {"message": f"No player found with the name '{self.player_name}'"}
+
+                return {
+                    "players": [
+                        {
+                            "idPlayer": player.get("idPlayer"),
+                            "strPlayer": player.get("strPlayer"),
+                            "strTeam": player.get("strTeam"),
+                            "strPosition": player.get("strPosition"),
+                            "dateBorn": player.get("dateBorn"),
+                            "strNationality": player.get("strNationality"),
+                            "strDescriptionEN": player.get("strDescriptionEN"),
+                        }
+                        for player in players
+                    ]
+                }
+            else:
+                raise HTTPException(status_code=500, detail=f"Failed to fetch data. Status code: {response.status_code}")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error fetching player data: {e}")
+
+    def get_player_career(self):
+        """
+        Fetch career stats for the QB from the database.
+        """
+        player_data = collection.find_one({'_id': 'nfl_stats'})
+        if not player_data:
+            raise HTTPException(status_code=404, detail=f"Player '{self.player_name}' not found")
+
+        retrieved_df = pd.DataFrame(player_data['data'])
+        if retrieved_df.empty:
+            raise HTTPException(status_code=404, detail=f"No data found for player '{self.player_name}'")
+
+        important_columns = [
+            "Season", "Age", "Team", "Pos", "G", "Cmp", "Att", "Cmp%", "Yds", "TD", "Int", "Rate"
+        ]
+        retrieved_df = retrieved_df[important_columns]
+        retrieved_df = retrieved_df.applymap(lambda x: None if pd.isna(x) else x)
+
+        records = retrieved_df.to_dict(orient="records")
+        for record in records:
+            for key, value in record.items():
+                if isinstance(value, np.int64):
+                    record[key] = int(value)
+                elif isinstance(value, pd.Timestamp):
+                    record[key] = value.isoformat()
+                elif isinstance(value, pd.Timedelta):
+                    record[key] = value.total_seconds()
+
+        return {"data": records}
+
+    def serve_plot(self):
+        """
+        Serve QB plots from AWS or generate new ones.
+        """
+        if (
+            aws.check_file_exists("nflfootballwebsite", f"{self.player_name}.png")
+            and aws.check_file_exists("nflfootballwebsite", f"{self.player_name}(1).png")
+            and aws.check_file_exists("nflfootballwebsite", f"{self.player_name}(2).png")
+        ):
+            aws.download("nflfootballwebsite", f"{self.player_name}.png")
+            aws.download("nflfootballwebsite", f"{self.player_name}(1).png")
+            aws.download("nflfootballwebsite", f"{self.player_name}(2).png")
+
+            return {
+                "data": [
+                    f"https://winter-break-project.onrender.com/serves_plot/saved_graphs/{self.player_name}.png",
+                    f"https://winter-break-project.onrender.com/serves_plot/saved_graphs/{self.player_name}(1).png",
+                    f"https://winter-break-project.onrender.com/serves_plot/saved_graphs/{self.player_name}(2).png",
+                ]
+            }
+
+        le = qb.get_data(self.player_name)
+        return {"data": [f"http://127.0.0.1:8000/serves_plot/{file_path}" for file_path in le]}
+
+    def prompt(self):
+        """
+        Generate QB analysis using generative AI.
+        """
+        image_directory = [
+            f"saved_graphs/{self.player_name}.png",
+            f"saved_graphs/{self.player_name}(1).png",
+            f"saved_graphs/{self.player_name}(2).png",
+        ]
+        prompt = (
+            "You are a professional QB Analyzer specializing in evaluating quarterbacks' performance "
+            "through advanced statistical analysis and visualizations. I have a graph that contains key "
+            "metrics of a quarterback's performance (e.g., passing yards, completion rate, touchdown-to-interception ratio, pocket presence). "
+            "Your task is to:\n"
+            "1. Analyze the graph in-depth and extract actionable insights.\n"
+            "2. Highlight the quarterback's strengths and weaknesses based on the data presented.\n"
+            "3. Identify any patterns, anomalies, or trends that might be critical for improving their game.\n"
+            "4. Summarize your analysis in a concise and structured way that can help coaches, analysts, or fans understand the player's performance."
+        )
+        answers = []
+        for image_path in image_directory:
+            img = Image.open(image_path)
+            response = genai.GenerativeModel("gemini-1.5-flash").generate_content([prompt, img])
+            answers.append(response.text)
+        return answers
+
+    def ai_analysis(self):
+        """
+        Generate AI-based QB grade reports.
+        """
+        tuned_models = []
+        for i, m in zip(range(5), genai.list_tuned_models()):
+            tuned_models.append(m.name)
+
+        model = genai.GenerativeModel(model_name=tuned_models[0])
+
+        player_data = collection.find_one({'_id': 'nfl_stats'})
+        retrieved_df = pd.DataFrame(player_data['data']).applymap(lambda x: None if pd.isna(x) else x)
+
+        records = retrieved_df.to_dict(orient="records")
+        converted_data = [
+            {
+                "text_input": f"Player: {self.player_name}, Passing Yards: {entry['Yds']}, Touchdowns: {entry['TD']}, "
+                              f"Interceptions: {entry['Int']}, Completion Percentage: {entry['Cmp%']}%"
+            }
+            for entry in records
+        ]
+
+        fin = [model.generate_content(qb["text_input"]).text.strip().split("\n")[0] for qb in converted_data]
+        return fin
+
+
+class RB:
+    print()
+    #Implement
+
+class WR:
+    print()
+    #Implement 
+
+class TE:
+    print()
+    #Implement
+
+
+# Routes
 @app.get("/")
 def root():
     return {"message": "Welcome to the Sports Stat Backend"}
 
-
-#Grabs the basic Info about the player that is searched
 @app.get("/player-stats/{player_name}")
 def get_player_stats(player_name: str):
-    """
-    Fetch player statistics by player name from an external API.
+    qb_instance = QB(player_name)
+    return qb_instance.get_player_stats()
 
-    Args:
-        player_name (str): Name of the player to search for.
-
-    Returns:
-        dict: Player statistics or error message if no player is found.
-    """
-    try:
-        
-        response = requests.get(f"{BASE_URL}/{API_KEY}/searchplayers.php", params={"p": player_name})
-
-
-        
-        if response.status_code == 200:
-            data = response.json()
-            players = data.get("player", [])
-
-            
-            if not players:
-                return {"message": f"No player found with the name '{player_name}'"}
-
-           
-            player_data = []
-            for player in players:
-                player_data.append({
-                    "idPlayer": player.get("idPlayer"),
-                    "strPlayer": player.get("strPlayer"),
-                    "strTeam": player.get("strTeam"),
-                    "strPosition": player.get("strPosition"),
-                    "dateBorn": player.get("dateBorn"),
-                    "strNationality": player.get("strNationality"),
-                    "strDescriptionEN": player.get("strDescriptionEN"),
-                })
-
-            
-            return {"players": player_data}
-        else:
-            
-            raise HTTPException(status_code=500, detail=f"Failed to fetch data. Status code: {response.status_code}")
-    except Exception as e:
-        
-        raise HTTPException(status_code=500, detail=f"Error fetching player data: {e}")
-    
-
-#Grabs the actual stats of the player
 @app.get("/player/career/{player_name}")
 def get_player_career(player_name: str):
+    qb_instance = QB(player_name)
+    return qb_instance.get_player_career()
 
-
-    player_data = collection.find_one({'_id': 'nfl_stats'})
-
-    if not player_data:
-        raise HTTPException(status_code=404, detail=f"Player '{player_name}' not found")
-
-    retrieved_df = pd.DataFrame(player_data['data'])
-
-    if retrieved_df.empty:
-        raise HTTPException(status_code=404, detail=f"No data found for player '{player_name}'")
-
-
-    
-    #Replace Nan with None so JSON can handle it
-    retrieved_df = retrieved_df.applymap(lambda x: False if pd.isna(x) else x)
-
-    #Import qb stats
-    important_columns = [
-    "Season",
-    "Age",
-    "Team",
-    "Pos",
-    "G",
-    "Cmp",
-    "Att",
-    "Cmp%",
-    "Yds",
-    "TD",
-    "Int",
-    "Rate",
-    ]
-
-    retrieved_df = retrieved_df[important_columns]
-
-    # Convert the DataFrame to a list of dictionaries
-    records = retrieved_df.to_dict(orient="records")
-
-    for record in records:
-        for key, value in record.items():
-            if isinstance(value, np.int64):
-                record[key] = int(value) 
-            
-            elif isinstance(value, pd.Timestamp):
-                record[key] = value.isoformat()  
-            elif isinstance(value, pd.Timedelta):
-                record[key] = value.total_seconds() 
-
-    return {"data": records}
-
-
-#stores the images in temp folders, then calls api to retreive them
 @app.get("/serve_plot/{player_name}")
 def serve_plot(player_name: str):
+    qb_instance = QB(player_name)
+    return qb_instance.serve_plot()
 
-    if(aws.check_file_exists("nflfootballwebsite", f"{player_name}.png") and aws.check_file_exists("nflfootballwebsite", f"{player_name}(1).png") and 
-       aws.check_file_exists("nflfootballwebsite", f"{player_name}(2).png")):
-        
-        aws.download("nflfootballwebsite", f"{player_name}.png")
-        aws.download("nflfootballwebsite", f"{player_name}(1).png")
-        aws.download("nflfootballwebsite", f"{player_name}(2).png")
-
-        file_paths = [
-            f"https://winter-break-project.onrender.com/serves_plot/saved_graphs/{player_name}.png",
-            f"https://winter-break-project.onrender.com/serves_plot/saved_graphs/{player_name}(1).png",
-            f"https://winter-break-project.onrender.com/serves_plot/saved_graphs/{player_name}(2).png"
-        ]
-        
-        return {"data": file_paths}
-
-    le = qb.get_data(player_name)
-    
-    plot_file_urls = [f"https://winter-break-project.onrender.com/serves_plot/{file_path}" for file_path in le]
-
-    return {"data": plot_file_urls}
-
-#Prompt Engineer to get good analysis of qb graphs
 @app.get("/analyze/{player_name}")
-def prompt(player_name: str):
-    image_directory = [f"saved_graphs/{player_name}.png", f"saved_graphs/{player_name}(1).png", f"saved_graphs/{player_name}(2).png"]
+def analyze_player(player_name: str):
+    qb_instance = QB(player_name)
+    return qb_instance.prompt()
 
-    prompt = (
-    "You are a professional QB Analyzer specializing in evaluating quarterbacks' performance "
-    "through advanced statistical analysis and visualizations. I have a graph that contains key "
-    "metrics of a quarterback's performance (e.g., passing yards, completion rate, touchdown-to-interception ratio, pocket presence). "
-    "Your task is to:\n"
-    "1. Analyze the graph in-depth and extract actionable insights.\n"
-    "2. Highlight the quarterback's strengths and weaknesses based on the data presented.\n"
-    "3. Identify any patterns, anomalies, or trends that might be critical for improving their game.\n"
-    "4. Summarize your analysis in a concise and structured way that can help coaches, analysts, or fans understand the player's performance.\n\n"
-    
-    "Begin your analysis by explicitly stating the focus of the graph and break down its implications with clear explanations. IN YOUR OUTPUT, ONLY INCLUDE THE ANALYSIS, and DO NOT INCLUDE MARKDOWN"
-    )
+@app.get("/AI/{playername}")
+def ai_analysis(playername: str):
+    qb_instance = QB(playername)
+    return qb_instance.ai_analysis()
 
-    answers = []
-
-
-    for image in image_directory:
-        img = Image.open(image)
-
-        response = genai.GenerativeModel('gemini-1.5-flash').generate_content([prompt, img])
-        answers.append(response.text)
-
-    return answers
-
-#Gets the image to the front end
 @app.get("/serves_plot/{filename:path}")
 def serve_image(filename: str):
 
@@ -213,60 +230,6 @@ def serve_image(filename: str):
 
     return FileResponse(file_path, media_type='image/png')
 
-#Get a grade report of the player, season by season
-@app.get("/AI/{playername}")
-def ai_analysis(playername: str):
-
-    tuned_models = []
-    for i, m in zip(range(5), genai.list_tuned_models()):
-        tuned_models.append(m.name)
-
-    #Use the QB fine tune
-    model = genai.GenerativeModel(model_name=tuned_models[0])
-
-    player_data = collection.find_one({'_id': 'nfl_stats'})
-
-    retrieved_df = pd.DataFrame(player_data['data'])
-
-    retrieved_df = retrieved_df.applymap(lambda x: False if pd.isna(x) else x)
-
-    records = retrieved_df.to_dict(orient="records")
-
-    # Convert the JSON data into the desired format
-    converted_data = []
-
-    for entry in records:
-        player_name = f"Player: {playername}"  # Placeholder for player name, update as needed
-        passing_yards = entry["Yds"]
-        touchdowns = entry["TD"]
-        interceptions = entry["Int"]
-        completion_percentage = entry["Cmp%"]
-    
-        text_input = f"Player: {player_name}, Passing Yards: {passing_yards}, Touchdowns: {touchdowns}, Interceptions: {interceptions}, Completion Percentage: {completion_percentage}%"
-        converted_data.append({
-            "text_input": text_input
-        })
-
-    fin = []
-
-    for qb in converted_data:
-        test_input = qb["text_input"] 
-
-        result = model.generate_content(test_input)
-        result = result.text.strip()
-
-        fin.append(result)
-
-    cleaned_output = []
-    for item in fin:
-        # Split by newline to remove commentary, keep only the first line
-        cleaned_entry = item.split("\n")[0]
-        # Append the cleaned entry
-        cleaned_output.append(cleaned_entry)
-
-
-
-    return cleaned_output
 
 
 

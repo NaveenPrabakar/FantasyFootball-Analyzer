@@ -12,6 +12,7 @@ import MainStatsPage from "./components/MainStatsPage";
 import FullStatsPage from "./components/FullStatsPage";
 import ImagesPage from "./components/ImagesPage";
 import ReportCardPage from "./components/ReportCardPage"
+import LoadingSpinner from "./components/LoadingSpinner";
 import "./App.css";
 import axios from "axios";
 
@@ -26,12 +27,16 @@ function App() {
   const [cleanedOutput, setCleanedOutput] = useState([]); 
   const [showReportCard, setShowReportCard] = useState(false);
   const [analysis, setAnalysis] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSearch = async () => {
     if (!playerName) {
       alert("Please enter a player's name.");
       return;
     }
+
+    setIsLoading(true);
+
     try {
       const response = await fetchPlayerStats(playerName);
       setPlayerStats(response.data.players[0]);
@@ -41,9 +46,15 @@ function App() {
     } catch (error) {
       alert(`Error fetching player stats: ${error.message}`);
     }
+    finally{
+      setIsLoading(false);
+    }
   };
 
   const handleFetchCleanedOutput = async () => {
+
+    setIsLoading(true);
+
     try {
       const response = await fetchCleanedOutput(playerName);
       console.log(response.data)
@@ -52,6 +63,9 @@ function App() {
     } catch (error) {
       alert(`Error fetching cleaned output: ${error.message}`);
     }
+    finally{
+      setIsLoading(false);
+    }
   };
 
   const handleFullStats = async () => {
@@ -59,6 +73,9 @@ function App() {
       alert("Please search for a player first.");
       return;
     }
+
+    setIsLoading(true);
+
     try {
       const response = await fetchFullStats(playerName);
       setFullStats(response.data.data);
@@ -66,9 +83,13 @@ function App() {
     } catch (error) {
       alert(`Error fetching full stats: ${error.message}`);
     }
+    finally{
+      setIsLoading(false);
+    }
   };
 
   const handleFetchPlotImage = async () => {
+    setIsLoading(true);
     try {
       const response = await fetchPlotImage(globalPlayer.strPosition, playerName);
       console.log(response.data.data)
@@ -91,16 +112,21 @@ function App() {
     } catch (error) {
       alert(`Error fetching plot images: ${error.message}`);
     }
+    finally{
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="container">
-      {showImagesPage ? (
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : showImagesPage ? (
         <ImagesPage
-        plotImage={plotImage}
-        analysis={analysis} 
-        onBack={() => setShowImagesPage(false)}
-      />
+          plotImage={plotImage}
+          analysis={analysis}
+          onBack={() => setShowImagesPage(false)}
+        />
       ) : showFullStatsPage ? (
         <FullStatsPage
           fullStats={fullStats}
@@ -120,17 +146,23 @@ function App() {
             setPlayerName={setPlayerName}
             onSearch={handleSearch}
           />
-          <button className="report-button" onClick={handleFetchCleanedOutput}>
+          <button
+            className="report-button"
+            onClick={handleFetchCleanedOutput}
+          >
             Show Report Card
           </button>
 
           {playerStats && (
-            <MainStatsPage playerStats={playerStats} onFullStats={handleFullStats} />
+            <MainStatsPage
+              playerStats={playerStats}
+              onFullStats={handleFullStats}
+            />
           )}
         </>
       )}
     </div>
   );
-}
+};
 
 export default App;
