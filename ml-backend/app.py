@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse, FileResponse
 import qb
 import aws
 import google.generativeai as genai
+import rb
 from PIL import Image
 
 # Configure generative AI
@@ -179,6 +180,30 @@ class QB:
 class RB:
     print()
     #Implement
+
+    def serve_plot(self):
+        """
+        Serve RB plots from AWS or generate new ones.
+        """
+        if (
+            aws.check_file_exists("nflfootballwebsite", f"{self.player_name}.png")
+            and aws.check_file_exists("nflfootballwebsite", f"{self.player_name}(1).png")
+            and aws.check_file_exists("nflfootballwebsite", f"{self.player_name}(2).png")
+        ):
+            aws.download("nflfootballwebsite", f"{self.player_name}.png")
+            aws.download("nflfootballwebsite", f"{self.player_name}(1).png")
+            aws.download("nflfootballwebsite", f"{self.player_name}(2).png")
+
+            return {
+                "data": [
+                    f"https://winter-break-project.onrender.com/serves_plot/saved_graphs/{self.player_name}.png",
+                    f"https://winter-break-project.onrender.com/serves_plot/saved_graphs/{self.player_name}(1).png",
+                    f"https://winter-break-project.onrender.com/serves_plot/saved_graphs/{self.player_name}(2).png",
+                ]
+            }
+
+        le = rb.get_data(self.player_name)
+        return {"data": [f"http://127.0.0.1:8000/serves_plot/{file_path}" for file_path in le]}
 
 class WR:
     print()
