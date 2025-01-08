@@ -1,0 +1,56 @@
+
+
+[
+    {
+        "text_input": "Player: Joe Mixon, Rushing Yards: 1205, Touchdowns: 13, Fumbles: 3, Yards per Carry: 4.5",
+        "expected output": "Performance Grade: A-"
+    },
+    {
+        "text_input": "Player: Christian McCaffrey, Rushing Yards: 1400, Touchdowns: 11, Fumbles: 2, Yards per Carry: 4.8",
+        "expected output": "Performance Grade: A"
+    },
+    {
+        "text_input": "Player: David Montgomery, Rushing Yards: 1160, Touchdowns: 8, Fumbles: 2, Yards per Carry: 4.3",
+        "expected output": "Performance Grade: B"
+    },
+    {
+        "text_input": "Player: Josh Jacobs, Rushing Yards: 1600, Touchdowns: 14, Fumbles: 3, Yards per Carry: 4.9",
+        "expected output": "Performance Grade: A"
+    },
+    {
+        "text_input": "Player: DeAndre Swift, Rushing Yards: 617, Touchdowns: 3, Fumbles: 2, Yards per Carry: 4.0",
+        "expected output": "Performance Grade: D"
+    },
+    {
+        "text_input": "Player: Miles Sanders, Rushing Yards: 1075, Touchdowns: 6, Fumbles: 1, Yards per Carry: 4.7",
+        "expected output": "Performance Grade: B"
+    },
+    {
+        "text_input": "Player: Tony Pollard, Rushing Yards: 1200, Touchdowns: 9, Fumbles: 1, Yards per Carry: 5.0",
+        "expected output": "Performance Grade: B+"
+    },
+    {
+        "text_input": "Player: J.K. Dobbins, Rushing Yards: 900, Touchdowns: 7, Fumbles: 1, Yards per Carry: 5.0",
+        "expected output": "Performance Grade: B"
+    },
+    {
+        "text_input": "Player: Kareem Hunt, Rushing Yards: 860, Touchdowns: 8, Fumbles: 3, Yards per Carry: 4.1",
+        "expected output": "Performance Grade: C"
+    },
+    {
+        "text_input": "Player: Leonard Fournette, Rushing Yards: 780, Touchdowns: 6, Fumbles: 2, Yards per Carry: 4.0",
+        "expected output": "Performance Grade: C"
+    },
+    {
+        "text_input": "Player: Raheem Mostert, Rushing Yards: 1072, Touchdowns: 7, Fumbles: 1, Yards per Carry: 5.4",
+        "expected output": "Performance Grade: B+"
+    },
+    {
+        "text_input": "Player: James Robinson, Rushing Yards: 1085, Touchdowns: 6, Fumbles: 2, Yards per Carry: 4.5",
+        "expected output": "Performance Grade: B"
+    },
+    {
+        "text_input": "Player: Damien Harris, Rushing Yards: 929, Touchdowns: 14, Fumbles: 3, Yards per Carry: 4.6",
+        "expected output": "Performance Grade: B+"
+    }
+]

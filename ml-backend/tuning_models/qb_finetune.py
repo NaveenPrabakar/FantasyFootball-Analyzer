@@ -66,7 +66,7 @@ for test_case in test_data:
 
    
     result = model.generate_content(test_input)
-    predicted_output = result.text.strip()
+    predicted_output = result.text.strip().split("\n")[0]
 
     
     if predicted_output == expected_output:
