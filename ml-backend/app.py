@@ -271,17 +271,8 @@ def search_player_highlights(playername: str):
 
 
   
-    youtube_search_url = "https://www.googleapis.com/youtube/v3/search"
-    params = {
-        "part": "snippet",
-        "q": f"{playername} highlights",
-        "type": "video",
-        "maxResults": 5,  
-        "key": YOUTUBE_API_KEY,
-    }
-
-   
-    response = requests.get(youtube_search_url, params=params)
+    youtube_search_url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&q={playername}%20highlights&type=video&maxResults=1&key={YOUTUBE_API_KEY}"
+    response = requests.get(youtube_search_url)
 
     if response.status_code != 200:
         raise HTTPException(
@@ -290,19 +281,16 @@ def search_player_highlights(playername: str):
         )
 
     
-    data = response.json()
-    if "items" in data and len(data["items"]) > 0:
-        
-        for item in data["items"]:
-            channel_title = item["snippet"]["channelTitle"]
-            if "NFL" not in channel_title:  
-                video_id = item["id"]["videoId"]
-                aws.insert_data(connection, playername, video_id)
-                return video_id
-        
-        raise HTTPException(status_code=404, detail="No highlights found for the player outside of the NFL channel.")
+    if response.status_code == 200:
+        data = response.json()
+        if "items" in data and len(data["items"]) > 0:
+            video_id = data["items"][0]["id"]["videoId"]
+            aws.insert_data(connection, playername, video_id)
+            return video_id
+        else:
+            return {"error": "No videos found"}
     else:
-        raise HTTPException(status_code=404, detail="No highlights found for the player.")
+        return {"error": "Failed to fetch data", "status_code": response.status_code, "message": response.text}
 
 
 
