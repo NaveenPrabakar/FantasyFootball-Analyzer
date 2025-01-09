@@ -264,9 +264,13 @@ from fastapi import HTTPException
 
 @app.get("/search/{playername}")
 def search_player_highlights(playername: str):
-    """
-    Search for NFL player highlights on YouTube and return the first video link (excluding NFL official videos).
-    """
+    connection = aws.connect_to_rds_mysql()
+
+    if aws.get_player_videos(connection, playername) is not None:
+        return aws.get_player_videos(connection, playername)
+
+
+  
     youtube_search_url = "https://www.googleapis.com/youtube/v3/search"
     params = {
         "part": "snippet",
@@ -293,6 +297,7 @@ def search_player_highlights(playername: str):
             channel_title = item["snippet"]["channelTitle"]
             if "NFL" not in channel_title:  
                 video_id = item["id"]["videoId"]
+                aws.insert_data(connection, playername, video_id)
                 return video_id
         
         raise HTTPException(status_code=404, detail="No highlights found for the player outside of the NFL channel.")
