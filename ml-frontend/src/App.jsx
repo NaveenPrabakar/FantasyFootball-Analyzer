@@ -10,6 +10,7 @@ import {
 import SearchBar from "./components/SearchBar";
 import MainStatsPage from "./components/MainStatsPage";
 import FullStatsPage from "./components/FullStatsPage";
+import ParticlesBackground from './components/ParticlesBackground';
 import ImagesPage from "./components/ImagesPage";
 import ReportCardPage from "./components/ReportCardPage"
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -119,6 +120,7 @@ function App() {
 
   return (
     <div className="container">
+      <ParticlesBackground />  
       {isLoading ? (
         <LoadingSpinner />
       ) : showImagesPage ? (
