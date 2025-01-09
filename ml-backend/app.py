@@ -266,32 +266,29 @@ from fastapi import HTTPException
 def search_player_highlights(playername: str):
     connection = aws.connect_to_rds_mysql()
 
-    player_videos = aws.get_player_videos(connection, playername)
-    if player_videos is not None and player_videos != []:
-        return player_videos[0]["video"]
-
-
-  
-    youtube_search_url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&q={playername}%20highlights&type=video&maxResults=1&key={YOUTUBE_API_KEY}"
-    response = requests.get(youtube_search_url)
-
-    if response.status_code != 200:
-        raise HTTPException(
-            status_code=response.status_code,
-            detail=response.json().get("error", {}).get("message", "Unknown error"),
-        )
-
+    try:
+        player_videos = aws.get_player_videos(connection, playername)
+        if player_videos and len(player_videos) > 0:
+            return player_videos[0]["video"]
     
-    if response.status_code == 200:
-        data = response.json()
-        if "items" in data and len(data["items"]) > 0:
-            video_id = data["items"][0]["id"]["videoId"]
-            aws.insert_data(connection, playername, video_id)
-            return video_id
+    except Exception as e:
+
+        youtube_search_url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&q={playername}%20highlights&type=video&maxResults=1&key={YOUTUBE_API_KEY}"
+        response = requests.get(youtube_search_url)
+        
+        if response.status_code != 200:
+            raise HTTPException(status_code=response.status_code, detail=response.json().get("error", {}).get("message", "Unknown error"),)
+            
+        if response.status_code == 200:
+            data = response.json()
+            if "items" in data and len(data["items"]) > 0:
+                video_id = data["items"][0]["id"]["videoId"]
+                aws.insert_data(connection, playername, video_id)
+                return video_id
+            else:
+                return {"error": "No videos found"}
         else:
-            return {"error": "No videos found"}
-    else:
-        return {"error": "Failed to fetch data", "status_code": response.status_code, "message": response.text}
+            return {"error": "Failed to fetch data", "status_code": response.status_code, "message": response.text}
 
 
 
