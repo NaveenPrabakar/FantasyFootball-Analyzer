@@ -266,8 +266,9 @@ from fastapi import HTTPException
 def search_player_highlights(playername: str):
     connection = aws.connect_to_rds_mysql()
 
-    if aws.get_player_videos(connection, playername) is not None:
-        return aws.get_player_videos(connection, playername)
+    player_videos = aws.get_player_videos(connection, playername)
+    if player_videos is not None and player_videos != []:
+        return player_videos[0]["video"]
 
 
   
