@@ -247,6 +247,20 @@ body {
   transform: scale(1.05);
 }
 
+.video-container {
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 255, 204, 0.3);
+  text-align: center;
+}
+
+.video-container h3 {
+  color: #00ffcc;
+  margin-bottom: 10px;
+}
+
 
 
 

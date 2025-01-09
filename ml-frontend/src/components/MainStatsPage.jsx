@@ -1,6 +1,6 @@
 import React from "react";
 
-const MainStatsPage = ({ playerStats, onFullStats, onFetchCleanedOutput }) => (
+const MainStatsPage = ({ playerStats, onFullStats, onFetchCleanedOutput, OnVideo }) => (
   <div className="statsBox animateStats">
     <h3>Player Stats</h3>
     <div style={{ textAlign: "center" }}>
@@ -34,6 +34,9 @@ const MainStatsPage = ({ playerStats, onFullStats, onFetchCleanedOutput }) => (
       </button>
       <button onClick={onFetchCleanedOutput} className="button">
         AI Analysis
+      </button>
+      <button onClick={OnVideo} className="button">
+        Film
       </button>
     </div>
   </div>

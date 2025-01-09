@@ -59,3 +59,15 @@ export const fetchAnalysis = async (playerName) => {
   }
 };
 
+//API to fetch video link
+export const fetchVideo = async (playerName) => {
+  try {
+    const response = await axios.get(`https://winter-break-project.onrender.com/search/${playerName}`);
+    return response;
+  } catch (error) {
+    console.error(`Error fetching video for ${playerName}: ${error.message}`);
+    throw new Error(`Error fetching video: ${error.message}`);
+  }
+};
+
+

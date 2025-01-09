@@ -5,7 +5,8 @@ import {
   fetchFullStats,
   fetchPlotImage,
   fetchCleanedOutput,
-  fetchAnalysis
+  fetchAnalysis,
+  fetchVideo
 } from "./services/api";
 import SearchBar from "./components/SearchBar";
 import MainStatsPage from "./components/MainStatsPage";
@@ -14,6 +15,7 @@ import ParticlesBackground from './components/ParticlesBackground';
 import ImagesPage from "./components/ImagesPage";
 import ReportCardPage from "./components/ReportCardPage"
 import LoadingSpinner from "./components/LoadingSpinner";
+import Video from "./components/Video";
 import "./App.css";
 import axios from "axios";
 
@@ -29,6 +31,8 @@ function App() {
   const [showReportCard, setShowReportCard] = useState(false);
   const [analysis, setAnalysis] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [videoUrl, setVideoUrl] = useState(null);
+  const [showVideoPage, setShowVideoPage] = useState(false);
 
   const handleSearch = async () => {
     if (!playerName) {
@@ -118,11 +122,41 @@ function App() {
     }
   };
 
+  const handleFetchVideo = async () => {
+    if (!playerName) {
+      alert("Please search for a player first.");
+      return;
+    }
+
+    setIsLoading(true)
+  
+    try {
+      const response = await fetchVideo(playerName);
+      const videoUrl = response.data;
+      setVideoUrl(videoUrl);
+      setShowVideoPage(true);
+      
+    } catch (error) {
+      alert(`Error fetching video: ${error.message}`);
+      throw error;
+    }
+    finally{
+      setIsLoading(false)
+    }
+  };
+
   return (
     <div className="container">
       <ParticlesBackground />  
       {isLoading ? (
         <LoadingSpinner />
+      
+      ) : showVideoPage ? (
+        <Video
+          videoUrl={videoUrl}
+          onBack={() => setShowVideoPage(false)} 
+        />
+      
       ) : showImagesPage ? (
         <ImagesPage
           plotImage={plotImage}
@@ -153,7 +187,8 @@ function App() {
             <MainStatsPage
               playerStats={playerStats}
               onFullStats={handleFullStats}
-              onFetchCleanedOutput={handleFetchCleanedOutput} 
+              onFetchCleanedOutput={handleFetchCleanedOutput}
+              OnVideo= {handleFetchVideo} 
             />
           )}
         </>

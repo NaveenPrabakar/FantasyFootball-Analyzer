@@ -1,0 +1,164 @@
+/* Global Styling */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #0a0a0a 0%, #004c4c 50%, #006666 100%);
+    color: #00ffcc;
+    overflow-x: hidden;
+    animation: fadeIn 2s ease-in-out;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    position: relative;
+    animation: slideUp 1.5s ease-in-out;
+  }
+  
+  /* Main container for the stats box */
+  .statsBox {
+    width: 90%;
+    max-width: 1200px;
+    padding: 20px;
+    margin-top: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 255, 204, 0.3), 0 -4px 8px rgba(0, 255, 204, 0.3);
+    text-align: left;
+    overflow-x: auto;
+    animation: fadeIn 2s ease-in-out;
+  }
+  
+  /* Title and player name styles */
+  .stats-title {
+    margin-bottom: 15px;
+    color: #00ffcc;
+    text-align: center;
+    animation: slideUp 2s ease-in-out;
+  }
+  
+  .player-name-container h2 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #00ffcc;
+  }
+  
+  /* Table Styling */
+  .statsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    animation: fadeIn 2s ease-in-out;
+  }
+  
+  .statsTable th,
+  .statsTable td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+    animation: fadeIn 2s ease-in-out;
+  }
+  
+  .statsTable th {
+    background-color: #00ffcc;
+    color: #0a0a0a;
+    font-weight: bold;
+  }
+  
+  .statsTable tr:nth-child(even) {
+    background-color: #1a1a1a;
+  }
+  
+  .statsTable tr:nth-child(odd) {
+    background-color: #121212;
+  }
+  
+  .statsTable tr:hover {
+    background-color: #292929;
+  }
+  
+  /* Button Styling */
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .button {
+    background-color: #00ffcc;
+    color: #0a0a0a;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    animation: fadeIn 1.5s ease-in-out;
+  }
+  
+  .button:hover {
+    transform: scale(1.1);
+    background-color: #00cc99;
+  }
+  
+  .full-stats {
+    background-color: #00ffcc;
+  }
+  
+  .ai-analysis {
+    background-color: #008CBA;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideUp {
+    0% {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Responsive design for mobile devices */
+  @media (max-width: 768px) {
+    .statsBox {
+      padding: 10px;
+    }
+  
+    .statsTable th,
+    .statsTable td {
+      padding: 8px;
+      font-size: 0.9em;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .statsBox {
+      width: 95%;
+      padding: 5px;
+    }
+  
+    .statsTable th,
+    .statsTable td {
+      padding: 6px;
+      font-size: 0.8em;
+    }
+  }
+  
+  

@@ -11,12 +11,16 @@ import aws
 import google.generativeai as genai
 import rb
 from PIL import Image
+import requests
+
 
 # Configure generative AI
 genai.configure(api_key= os.getenv("GEMINI_KEY"))
 
 # Initialize FastAPI app
 app = FastAPI()
+
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -123,7 +127,7 @@ class QB:
             }
 
         le = qb.get_data(self.player_name)
-        return {"data": [f"http://127.0.0.1:8000/serves_plot/{file_path}" for file_path in le]}
+        return {"data": [f"https://winter-break-project.onrender.com/serves_plot/{file_path}" for file_path in le]}
 
     def prompt(self):
         """
@@ -203,7 +207,7 @@ class RB:
             }
 
         le = rb.get_data(self.player_name)
-        return {"data": [f"http://127.0.0.1:8000/serves_plot/{file_path}" for file_path in le]}
+        return {"data": [f"https://winter-break-project.onrender.com/serves_plot/{file_path}" for file_path in le]}
 
 class WR:
     print()
@@ -254,6 +258,49 @@ def serve_image(filename: str):
         raise HTTPException(status_code=404, detail="File not found")
 
     return FileResponse(file_path, media_type='image/png')
+
+import requests
+from fastapi import HTTPException
+
+@app.get("/search/{playername}")
+def search_player_highlights(playername: str):
+    """
+    Search for NFL player highlights on YouTube and return the first video link (excluding NFL official videos).
+    """
+    youtube_search_url = "https://www.googleapis.com/youtube/v3/search"
+    params = {
+        "part": "snippet",
+        "q": f"{playername} highlights",
+        "type": "video",
+        "maxResults": 5,  
+        "key": YOUTUBE_API_KEY,
+    }
+
+   
+    response = requests.get(youtube_search_url, params=params)
+
+    if response.status_code != 200:
+        raise HTTPException(
+            status_code=response.status_code,
+            detail=response.json().get("error", {}).get("message", "Unknown error"),
+        )
+
+    
+    data = response.json()
+    if "items" in data and len(data["items"]) > 0:
+        
+        for item in data["items"]:
+            channel_title = item["snippet"]["channelTitle"]
+            if "NFL" not in channel_title:  
+                video_id = item["id"]["videoId"]
+                return video_id
+        
+        raise HTTPException(status_code=404, detail="No highlights found for the player outside of the NFL channel.")
+    else:
+        raise HTTPException(status_code=404, detail="No highlights found for the player.")
+
+
+
 
 
 
