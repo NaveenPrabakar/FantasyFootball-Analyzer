@@ -1,7 +1,6 @@
-
 import React from "react";
 
-const MainStatsPage = ({ playerStats, onFullStats }) => (
+const MainStatsPage = ({ playerStats, onFullStats, onFetchCleanedOutput }) => (
   <div className="statsBox animateStats">
     <h3>Player Stats</h3>
     <div style={{ textAlign: "center" }}>
@@ -27,10 +26,18 @@ const MainStatsPage = ({ playerStats, onFullStats }) => (
         </tr>
       </tbody>
     </table>
-    <button onClick={onFullStats} className="button">
-      Full Stats
-    </button>
+
+    
+    <div className="button-container">
+      <button onClick={onFullStats} className="button">
+        Full Stats
+      </button>
+      <button onClick={onFetchCleanedOutput} className="button">
+        AI Analysis
+      </button>
+    </div>
   </div>
 );
 
 export default MainStatsPage;
+

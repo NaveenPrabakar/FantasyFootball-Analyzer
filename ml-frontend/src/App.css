@@ -1,11 +1,9 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: "Press Start 2P", monospace;
-  background: url('R.gif') no-repeat center center fixed;
-  background-size: cover;
-  background-color: #001f3f;
-  color: #ffffff;
+  font-family: 'Roboto', sans-serif;
+  background-color: #0a0a0a;  
+  color: #00ffcc;  
   overflow-x: hidden;
   animation: fadeIn 2s ease-in-out;
 }
@@ -22,66 +20,20 @@ body {
 }
 
 .header {
-  font-size: 3em;
+  font-size: 3.5em;
   margin-bottom: 20px;
-  color: #ffb612;
-  text-shadow: 2px 2px 4px #000000;
+  color: #00ffcc;
+  text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
   animation: fadeIn 2s ease-in-out;
 }
 
 .searchBar {
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
   width: 80%;
   margin-bottom: 20px;
   animation: fadeIn 2s ease-in-out;
-  align-items: center;
-}
-
-.corner-gif {
-  position: absolute;
-  width: 150px;
-  height: 150px;
-  background-size: cover;
-  background-repeat: no-repeat;
-  animation: fadeInPop 2s ease-in-out;
-  z-index: 10;
-}
-
-.corner-gif.top-left {
-  top: 10px;
-  left: 10px;
-  background-image: url('220018.gif'); 
-}
-
-.corner-gif.top-right {
-  top: 10px;
-  right: 10px;
-  background-image: url('fafc5da0-986b-41b2-8c7e-f26c003bfc81.gif'); 
-}
-
-.corner-gif.bottom-left {
-  bottom: 10px;
-  left: 10px;
-  background-image: url('giphy (1).gif'); 
-}
-
-.corner-gif.bottom-right {
-  bottom: 10px;
-  right: 10px;
-  background-image: url('giphy.gif'); 
-}
-
-.corner-gif.middle-left {
-  top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-  background-image: url('giphy (2).gif'); 
-}
-
-.corner-gif.middle-right {
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  background-image: url('giphy (3).gif'); 
 }
 
 
@@ -103,17 +55,18 @@ body {
 .input {
   width: 70%;
   padding: 12px;
-  border: 2px solid #ffb612;
+  border: 2px solid #00ffcc;
   border-radius: 8px;
   font-size: 1em;
-  color: #001f3f;
-  margin-right: 10px;  
+  color: #f4f1f1;
+  background-color: rgba(0, 0, 0, 0.7);
+  margin-right: 10px;
   animation: slideUp 2s ease-in-out;
 }
 
 .button {
-  background-color: #ffb612;
-  color: #001f3f;
+  background-color: #00ffcc;
+  color: #0a0a0a;
   border: none;
   padding: 12px 20px;
   border-radius: 8px;
@@ -125,7 +78,7 @@ body {
 
 .button:hover {
   transform: scale(1.1);
-  background-color: #ffc857;
+  background-color: #00cc99;
 }
 
 .statsBox {
@@ -133,9 +86,9 @@ body {
   max-width: 1200px;
   padding: 20px;
   margin-top: 20px;
-  background: #4f4f4f;
+  background: rgba(0, 0, 0, 0.7);
   border-radius: 15px;
-  box-shadow: 4px 4px 6px #000000, -2px -2px 4px #145a32;
+  box-shadow: 0 4px 8px rgba(0, 255, 204, 0.3), 0 -4px 8px rgba(0, 255, 204, 0.3);
   text-align: left;
   overflow-x: auto;
   animation: fadeIn 2s ease-in-out;
@@ -143,7 +96,7 @@ body {
 
 .statsBox h3 {
   margin-bottom: 15px;
-  color: #ffb612;
+  color: #00ffcc;
   text-align: center;
   animation: slideUp 2s ease-in-out;
 }
@@ -164,21 +117,21 @@ body {
 }
 
 .statsTable th {
-  background-color: #ffb612;
-  color: #001f3f;
+  background-color: #00ffcc;
+  color: #0a0a0a;
   font-weight: bold;
 }
 
 .statsTable tr:nth-child(even) {
-  background-color: #5a5a5a;
+  background-color: #1a1a1a;
 }
 
 .statsTable tr:nth-child(odd) {
-  background-color: #3e3e3e;
+  background-color: #121212;
 }
 
 .statsTable tr:hover {
-  background-color: #8c8c8c;
+  background-color: #292929;
 }
 
 @media (max-width: 768px) {
@@ -213,7 +166,7 @@ body {
 .footballAnimation {
   width: 50px;
   height: 50px;
-  background-color: #ffb612;
+  background-color: #00ffcc;
   border-radius: 50%;
   position: absolute;
   top: 20%;
@@ -223,13 +176,13 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1.5em;
-  color: #001f3f;
+  color: #0a0a0a;
   text-align: center;
   animation: slideUp 3s ease-in-out;
 }
 
 .footballAnimation::before {
-  content: "🏈";
+  content: "🤖"; 
 }
 
 @keyframes throwFootball {

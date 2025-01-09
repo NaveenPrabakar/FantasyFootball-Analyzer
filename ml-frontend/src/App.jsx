@@ -146,17 +146,12 @@ function App() {
             setPlayerName={setPlayerName}
             onSearch={handleSearch}
           />
-          <button
-            className="report-button"
-            onClick={handleFetchCleanedOutput}
-          >
-            Show Report Card
-          </button>
-
+  
           {playerStats && (
             <MainStatsPage
               playerStats={playerStats}
               onFullStats={handleFullStats}
+              onFetchCleanedOutput={handleFetchCleanedOutput} 
             />
           )}
         </>

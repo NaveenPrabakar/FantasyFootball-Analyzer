@@ -1,74 +1,126 @@
 .imagesPage {
-    display: flex;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 30px;
+  background-color: #0a0a0a;
+}
+
+h3 {
+  margin-bottom: 30px; 
+  color: #00ffcc;
+  font-size: 2.5em; 
+  text-align: center;
+  text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+}
+
+.imageAnalysisContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.imageAnalysisBox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  max-width: 700px;
+  width: 100%;
+  border: 1px solid #00ffcc;
+  padding: 20px; 
+  border-radius: 12px;
+  background-color: #1a1a1a;
+  box-shadow: 0 4px 8px rgba(0, 255, 204, 0.2), 0 -4px 8px rgba(0, 255, 204, 0.2);
+  transition: transform 0.3s ease-in-out;
+  margin-bottom: 30px; 
+}
+
+.imageAnalysisBox:hover {
+  transform: scale(1.05);
+}
+
+.imageContainer {
+  flex: 0 0 40%;
+  text-align: center;
+  padding-right: 20px;
+}
+
+.plotImage {
+  width: 100%;
+  height: auto;
+  max-width: 250px;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 255, 204, 0.2);
+}
+
+.analysisContainer {
+  flex: 1;
+  padding: 20px;
+  background-color: #111111;
+  border-radius: 8px;
+  border: 1px solid #444444;
+  max-height: 300px;
+  overflow-y: auto;
+  color: #cccccc;
+  box-shadow: 0 4px 8px rgba(0, 255, 204, 0.1);
+  margin-left: 20px;
+}
+
+.analysisContainer p {
+  margin: 0;
+  padding: 8px 0;
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+
+.button {
+  padding: 12px 25px;
+  margin-top: 30px;
+  background-color: #00ffcc;
+  color: #0a0a0a;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.3s ease-in-out;
+  font-size: 1.1em;
+  text-align: center;
+}
+
+.button:hover {
+  transform: scale(1.1);
+  background-color: #00cc99;
+}
+
+@media (max-width: 768px) {
+  .imageAnalysisBox {
+    max-width: 100%;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
   }
-  
-  h3 {
+
+  .imageContainer {
+    flex: 0 0 100%;
     margin-bottom: 20px;
   }
-  
-  .imageAnalysisContainer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center; 
-    gap: 20px; 
-  }
-  
-  .imageAnalysisBox {
-    display: flex;
-    flex-direction: row; 
-    align-items: center; 
-    max-width: 700px; 
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-  }
-  
-  .imageContainer {
-    flex: 0 0 40%; 
-    text-align: center;
-  }
-  
-  .plotImage {
-    width: 100%;
-    height: auto;
-    max-width: 250px;
-    max-height: 300px; 
-    object-fit: cover; 
-  }
-  
+
   .analysisContainer {
-    flex: 1; 
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    max-height: 300px; 
-    overflow-y: auto; 
-    color: black;
+    flex: 1;
+    max-height: 200px;
   }
-  
-  .analysisContainer p {
-    margin: 0;
-    padding: 5px 0;
-    font-size: 14px; 
-  }
-  
+}
+
+@media (max-width: 480px) {
   .button {
     padding: 10px 20px;
-    margin-top: 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    font-size: 1em;
   }
-  
-  .button:hover {
-    background-color: #45a049;
-  }
-  
+}
+
+
+
   
