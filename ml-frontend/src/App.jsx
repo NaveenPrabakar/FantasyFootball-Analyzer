@@ -16,10 +16,12 @@ import ImagesPage from "./components/ImagesPage";
 import ReportCardPage from "./components/ReportCardPage"
 import LoadingSpinner from "./components/LoadingSpinner";
 import Video from "./components/Video";
+import OpeningScript from "./components/OpeningScript";
 import "./App.css";
 import axios from "axios";
 
 function App() {
+  const [showOpeningScript, setShowOpeningScript] = useState(true);
   const [playerName, setPlayerName] = useState("");
   const [playerStats, setPlayerStats] = useState(null);
   const [fullStats, setFullStats] = useState(null);
@@ -147,50 +149,54 @@ function App() {
 
   return (
     <div className="container">
-      <ParticlesBackground />  
-      
-      {isLoading ? (
-        <LoadingSpinner />
-      
-      ) : showVideoPage ? (
-        <Video
-          videoUrl={videoUrl}
-          onBack={() => setShowVideoPage(false)} 
-        />
-      
-      ) : showImagesPage ? (
-        <ImagesPage
-          plotImage={plotImage}
-          analysis={analysis}
-          onBack={() => setShowImagesPage(false)}
-        />
-      ) : showFullStatsPage ? (
-        <FullStatsPage
-          fullStats={fullStats}
-          onBack={() => setShowFullStatsPage(false)}
-          onVisuals={handleFetchPlotImage}
-        />
-      ) : showReportCard ? (
-        <ReportCardPage
-          cleanedOutput={cleanedOutput}
-          onBack={() => setShowReportCard(false)}
-        />
+      {showOpeningScript ? (
+        <OpeningScript onComplete={() => setShowOpeningScript(false)} />
       ) : (
         <>
-          <h1 className="header">🏈 Fantasy Football Analyzer 🏈</h1>
-          <SearchBar
-            playerName={playerName}
-            setPlayerName={setPlayerName}
-            onSearch={handleSearch}
-          />
-  
-          {playerStats && (
-            <MainStatsPage
-              playerStats={playerStats}
-              onFullStats={handleFullStats}
-              onFetchCleanedOutput={handleFetchCleanedOutput}
-              OnVideo= {handleFetchVideo} 
+          <ParticlesBackground />
+          
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : showVideoPage ? (
+            <Video
+              videoUrl={videoUrl}
+              onBack={() => setShowVideoPage(false)}
             />
+          ) : showImagesPage ? (
+            <ImagesPage
+              plotImage={plotImage}
+              analysis={analysis}
+              onBack={() => setShowImagesPage(false)}
+            />
+          ) : showFullStatsPage ? (
+            <FullStatsPage
+              fullStats={fullStats}
+              onBack={() => setShowFullStatsPage(false)}
+              onVisuals={handleFetchPlotImage}
+            />
+          ) : showReportCard ? (
+            <ReportCardPage
+              cleanedOutput={cleanedOutput}
+              onBack={() => setShowReportCard(false)}
+            />
+          ) : (
+            <>
+              <h1 className="header">🏈 Fantasy Football Analyzer 🏈</h1>
+              <SearchBar
+                playerName={playerName}
+                setPlayerName={setPlayerName}
+                onSearch={handleSearch}
+              />
+      
+              {playerStats && (
+                <MainStatsPage
+                  playerStats={playerStats}
+                  onFullStats={handleFullStats}
+                  onFetchCleanedOutput={handleFetchCleanedOutput}
+                  OnVideo={handleFetchVideo}
+                />
+              )}
+            </>
           )}
         </>
       )}
