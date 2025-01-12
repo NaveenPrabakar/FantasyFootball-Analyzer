@@ -1,33 +1,39 @@
-
 .spinnerContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; 
+}
+
+.loadingSpinner {
+  border: 8px solid #f3f3f3; 
+  border-top: 8px solid #3498db; 
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .loadingSpinner {
-    border: 8px solid #f3f3f3; 
-    border-top: 8px solid #3498db; 
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
+  100% {
+    transform: rotate(360deg);
   }
-  
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-  
-  p {
-    margin-top: 10px;
-    font-size: 16px;
-    color: black;
-  }
-  
+}
+
+p {
+  margin-top: 10px;
+  font-size: 16px;
+  color: black;
+}
+
+.funFact {
+  margin-top: 15px;
+  font-size: 14px;
+  font-style: italic;
+  color: black; /* Subtle color for differentiation */
+  text-align: center; /* Center align for multi-line facts */
+}
