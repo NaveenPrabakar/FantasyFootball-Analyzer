@@ -259,36 +259,50 @@ def serve_image(filename: str):
 
     return FileResponse(file_path, media_type='image/png')
 
-import requests
-from fastapi import HTTPException
+
 
 @app.get("/search/{playername}")
 def search_player_highlights(playername: str):
     connection = aws.connect_to_rds_mysql()
 
     try:
+    
         player_videos = aws.get_player_videos(connection, playername)
+
+        
         if player_videos and len(player_videos) > 0:
             return player_videos[0]["video"]
-    
-    except Exception as e:
-
-        youtube_search_url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&q={playername}%20highlights&type=video&maxResults=1&key={YOUTUBE_API_KEY}"
-        response = requests.get(youtube_search_url)
-        
-        if response.status_code != 200:
-            raise HTTPException(status_code=response.status_code, detail=response.json().get("error", {}).get("message", "Unknown error"),)
-            
-        if response.status_code == 200:
-            data = response.json()
-            if "items" in data and len(data["items"]) > 0:
-                video_id = data["items"][0]["id"]["videoId"]
-                aws.insert_data(connection, playername, video_id)
-                return video_id
-            else:
-                return {"error": "No videos found"}
         else:
-            return {"error": "Failed to fetch data", "status_code": response.status_code, "message": response.text}
+            
+            youtube_search_url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&q={playername}%20highlights&type=video&maxResults=1&key={YOUTUBE_API_KEY}"
+            response = requests.get(youtube_search_url)
+            
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=response.json().get("error", {}).get("message", "Unknown error"),
+                )
+            
+            if response.status_code == 200:
+                data = response.json()
+            
+                if "items" in data and len(data["items"]) > 0:
+                    video_id = data["items"][0].get("id", {}).get("videoId", None)
+                    
+                    
+                    if video_id:
+                        aws.insert_data(connection, playername, video_id)
+                        return video_id
+                    else:
+                        return {"error": "Video ID not found"}
+                else:
+                    return {"error": "No videos found"}
+            else:
+                return {"error": "Failed to fetch data", "status_code": response.status_code, "message": response.text}
+    except Exception as e:
+    
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
 
 
 
