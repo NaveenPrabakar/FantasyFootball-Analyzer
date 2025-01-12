@@ -148,6 +148,7 @@ function App() {
   return (
     <div className="container">
       <ParticlesBackground />  
+      
       {isLoading ? (
         <LoadingSpinner />
       
@@ -176,7 +177,7 @@ function App() {
         />
       ) : (
         <>
-          <h1 className="header">🏈 NFL Player Stats 🏈</h1>
+          <h1 className="header">🏈 Fantasy Football Analyzer 🏈</h1>
           <SearchBar
             playerName={playerName}
             setPlayerName={setPlayerName}
