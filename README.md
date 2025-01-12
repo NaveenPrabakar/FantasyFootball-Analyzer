@@ -7,7 +7,7 @@ A website to analyze football players
 - Visualize Stats for users to understand
 - Provide Fantasy Recommedations on draft postions and value
 
-Languages/Frameworks: React.js, Python, HTML, CSS, FastAPI
-Tools/Devlopment/Deployment: AWS S3, Docker, Render, Vercell
-Database: MongoDB, AWS RDS
-Libraries: Gemini API, Pandas, Seaborn, Sckit-learn
+Languages/Frameworks: React.js, Python, HTML, CSS, FastAPI //
+Tools/Devlopment/Deployment: AWS S3, Docker, Render, Vercell //
+Database: MongoDB, AWS RDS //
+Libraries: Gemini API, Pandas, Seaborn, Sckit-learn //
