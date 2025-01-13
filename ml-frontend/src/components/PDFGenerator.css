@@ -1,0 +1,17 @@
+.pdfButton {
+    background-color: #00ffcc;
+    color: #0a0a0a;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    animation: fadeIn 1.5s ease-in-out;
+    margin-top: 10px;
+  }
+  
+  .pdfButton:hover {
+    transform: scale(1.1);
+    background-color: #00cc99;
+  }

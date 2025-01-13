@@ -17,6 +17,7 @@ import ReportCardPage from "./components/ReportCardPage"
 import LoadingSpinner from "./components/LoadingSpinner";
 import Video from "./components/Video";
 import OpeningScript from "./components/OpeningScript";
+import PDFGenerator from "./components/PDFGenerator";
 import "./App.css";
 import axios from "axios";
 
@@ -196,6 +197,13 @@ function App() {
                   OnVideo={handleFetchVideo}
                 />
               )}
+
+              <PDFGenerator
+                playerStats={playerStats}
+                fullStats={fullStats}
+                plotImage={plotImage}
+                analysis={analysis}
+              />
             </>
           )}
         </>
