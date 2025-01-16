@@ -96,9 +96,19 @@ const LoadingSpinner = () => {
   ];
   
   useEffect(() => {
-    const fact = funFacts[Math.floor(Math.random() * funFacts.length)];
-    setRandomFact(`Did you know? ${fact}`);
-  }, []);
+    
+    const updateFact = () => {
+      const fact = funFacts[Math.floor(Math.random() * funFacts.length)];
+      setRandomFact(`Did you know? ${fact}`);
+    };
+
+    
+    updateFact();
+    const interval = setInterval(updateFact, 7000); // change facts every 7 seconds
+
+    
+    return () => clearInterval(interval);
+  }, [funFacts]);
 
   return (
     <div className="spinnerContainer">

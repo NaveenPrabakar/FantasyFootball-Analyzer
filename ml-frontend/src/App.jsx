@@ -203,6 +203,7 @@ function App() {
                 fullStats={fullStats}
                 plotImage={plotImage}
                 analysis={analysis}
+                cleanedOutput={cleanedOutput}
               />
             </>
           )}

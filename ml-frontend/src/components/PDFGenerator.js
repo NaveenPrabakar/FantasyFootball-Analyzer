@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import "./PDFGenerator.css"
 
-const PDFGenerator = ({ playerStats, fullStats, plotImage, analysis }) => {
+const PDFGenerator = ({ playerStats, fullStats, plotImage, analysis, cleanedOutput }) => {
   const generatePDF = () => {
     const doc = new jsPDF();
 
@@ -74,6 +74,22 @@ const PDFGenerator = ({ playerStats, fullStats, plotImage, analysis }) => {
           }
         });
       }
+
+      if (cleanedOutput && cleanedOutput.length > 0) {
+        doc.addPage();
+        doc.setFontSize(14);
+        doc.text("Performance Grade By Season", 14, 20);
+    
+        const cleanedOutputBody = cleanedOutput.map((item) => [item]);
+    
+        doc.autoTable({
+          startY: 25,
+          head: [["Performance Grade"]],
+          body: cleanedOutputBody,
+        });
+      }
+
+
       
     
     doc.save("Fantasy_Football_Analyzer_Report.pdf");

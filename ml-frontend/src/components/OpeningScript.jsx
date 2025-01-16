@@ -9,8 +9,7 @@ const OpeningScript = ({ onComplete }) => {
   const scriptText = `
 🏈 Welcome to Fantasy Football Pro! 🏆
 Are you ready to dominate your fantasy football league? Whether you're a rookie or a seasoned pro, we've got the tools, stats, and insights to give you the edge.
-From player rankings to matchup projections, Fantasy Football Pro is your ultimate guide to making smarter picks and managing your team like a champion.
-Let’s take your game to the next level—your league mates won’t know what hit them! 🚀
+🚀
   `.trim();
 
   const typingSpeed = 50; 
