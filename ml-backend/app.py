@@ -181,7 +181,7 @@ class QB:
         return fin
 
     #Todo: Use the model
-    def mlforqb(self.player_name):
+    def mlforqb(self):
         next_season_data = pd.DataFrame({'Age': [next_age], 'G': [None], 'GS': [None], 'Cmp': [None], 'Att': [None],  'Cmp%': [None], 'TD%': [None],  'Int': [None],  'Int%': [None],  '1D': [None],  
     'Succ%': [None],  'Lng': [None],  'Y/A': [None], 'AY/A': [None],  'Y/C': [None],  'Y/G': [None],  'Rate': [None],  'QBR': [None],  'Sk': [None],  'Yds.1': [None],  'Sk%': [None], 
     'NY/A': [None],  'ANY/A': [None], '4QC': [None],  'GWD': [None],  'AV': [None],  })
