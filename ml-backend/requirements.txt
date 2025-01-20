@@ -9,3 +9,4 @@ boto3
 Pillow==9.1.1
 requests
 pymysql
+sklearn
