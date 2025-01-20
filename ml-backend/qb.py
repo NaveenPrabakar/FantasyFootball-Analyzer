@@ -7,6 +7,12 @@ import matplotlib.pyplot as plt
 
 from pymongo import MongoClient
 
+from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
+from sklearn.linear_model import Ridge, Lasso, ElasticNet
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.metrics import mean_squared_error
+
 
 MONGO_URI = os.getenv("MONGO_URI")
 client = MongoClient(MONGO_URI)
@@ -149,6 +155,62 @@ def last(playername, global_df):
     aws.upload_file(f"saved_graphs/{playername}(2).png", "nflfootballwebsite", f"{playername}(2).png")
 
     return plot_file_path
+
+
+
+def qb_ml(playername, df):
+    
+    imputer = SimpleImputer(strategy='mean')
+    df = pd.DataFrame(imputer.fit_transform(df), columns=df.columns)
+    df['Cmp/Att'] = df['Cmp'] / df['Att']  # Completion efficiency
+    df['Yds/Att'] = df['Yds'] / df['Att']  # Yard per attempt
+    df['Yds/Cmp'] = df['Yds'] / df['Cmp']  # Yard per completion
+    df['TD/Att'] = df['TD'] / df['Att']  # Touchdowns per attempt
+    df['TD/Cmp'] = df['TD'] / df['Cmp']  # Touchdowns per completion
+    
+    # Scale the features
+    scaler = StandardScaler()
+    df_scaled = pd.DataFrame(scaler.fit_transform(df), columns=df.columns)
+    
+    # Select features (we can keep all numerical columns)
+    features = ['Age', 'G', 'GS', 'Cmp', 'Att', 'Cmp%', 'Int', 'Int%', '1D', 'Succ%', 'Lng', 
+            'Y/A', 'AY/A', 'Y/C', 'Y/G', 'Rate', 'QBR', 'Sk', 'Yds.1', 'Sk%', 'NY/A', 'ANY/A', '4QC', 'GWD', 'AV',
+            'Cmp/Att', 'Yds/Att', 'Yds/Cmp', 'TD/Att', 'TD/Cmp']
+            
+    X = df_scaled[features]
+    y_yds = df_scaled['Yds']
+    
+    # Hyperparameter tuning for Ridge, Lasso, and ElasticNet
+    
+    ridge_model = Ridge()
+    lasso_model = Lasso()
+    elasticnet_model = ElasticNet()
+    
+    # Hyperparameter grids for tuning
+    
+    param_grid = {
+        'Ridge': {'alpha': [0.01, 0.1, 1, 10, 100]},
+        'Lasso': {'alpha': [0.01, 0.1, 1, 10, 100]},
+        'ElasticNet': {'alpha': [0.01, 0.1, 1, 10, 100], 'l1_ratio': [0.1, 0.5, 0.9]}
+        }
+        
+    best_models = {}
+    
+    for model_name, model in zip(['Ridge', 'Lasso', 'ElasticNet'], [ridge_model, lasso_model, elasticnet_model]):
+        grid_search = GridSearchCV(estimator=model, param_grid=param_grid[model_name], cv=5, n_jobs=-1, scoring='neg_mean_squared_error')
+        grid_search.fit(X, y_yds)
+        
+        best_models[model_name] = grid_search.best_estimator_
+        predictions = grid_search.best_estimator_.predict(X)
+        mse = mean_squared_error(y_yds, predictions)
+        
+    best_model_name = min(best_models, key=lambda model: mean_squared_error(y_yds, best_models[model].predict(X)))
+    best_model = best_models[best_model_name]
+    # Train the best model on the entire dataset
+     
+    best_model.fit(X, y_yds)
+
+
 
 
     
