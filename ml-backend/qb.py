@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 
 from pymongo import MongoClient
 
-from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
-from sklearn.linear_model import Ridge, Lasso, ElasticNet
-from sklearn.preprocessing import StandardScaler
-from sklearn.impute import SimpleImputer
-from sklearn.metrics import mean_squared_error
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error, r2_score
+from sklearn.model_selection import train_test_split
+import joblib
+
 
 
 MONGO_URI = os.getenv("MONGO_URI")
@@ -157,58 +157,77 @@ def last(playername, global_df):
     return plot_file_path
 
 
+def retrain_model(data_path='path_to_new_data.csv', save_path='./models/'):
 
-def qb_ml(playername, df):
     
-    imputer = SimpleImputer(strategy='mean')
-    df = pd.DataFrame(imputer.fit_transform(df), columns=df.columns)
-    df['Cmp/Att'] = df['Cmp'] / df['Att']  # Completion efficiency
-    df['Yds/Att'] = df['Yds'] / df['Att']  # Yard per attempt
-    df['Yds/Cmp'] = df['Yds'] / df['Cmp']  # Yard per completion
-    df['TD/Att'] = df['TD'] / df['Att']  # Touchdowns per attempt
-    df['TD/Cmp'] = df['TD'] / df['Cmp']  # Touchdowns per completion
+    def load_data():
+        df = pd.read_csv(data_path)  
+        df = df.drop(columns=['Awards', 'Season', 'Team', 'Lg', 'Pos', 'QBrec'])  
+        df = df.iloc[:-2]  
+        df = df.dropna()  
+        return df
+
     
-    # Scale the features
-    scaler = StandardScaler()
-    df_scaled = pd.DataFrame(scaler.fit_transform(df), columns=df.columns)
-    
-    # Select features (we can keep all numerical columns)
-    features = ['Age', 'G', 'GS', 'Cmp', 'Att', 'Cmp%', 'Int', 'Int%', '1D', 'Succ%', 'Lng', 
-            'Y/A', 'AY/A', 'Y/C', 'Y/G', 'Rate', 'QBR', 'Sk', 'Yds.1', 'Sk%', 'NY/A', 'ANY/A', '4QC', 'GWD', 'AV',
-            'Cmp/Att', 'Yds/Att', 'Yds/Cmp', 'TD/Att', 'TD/Cmp']
-            
-    X = df_scaled[features]
-    y_yds = df_scaled['Yds']
-    
-    # Hyperparameter tuning for Ridge, Lasso, and ElasticNet
-    
-    ridge_model = Ridge()
-    lasso_model = Lasso()
-    elasticnet_model = ElasticNet()
-    
-    # Hyperparameter grids for tuning
-    
-    param_grid = {
-        'Ridge': {'alpha': [0.01, 0.1, 1, 10, 100]},
-        'Lasso': {'alpha': [0.01, 0.1, 1, 10, 100]},
-        'ElasticNet': {'alpha': [0.01, 0.1, 1, 10, 100], 'l1_ratio': [0.1, 0.5, 0.9]}
-        }
+    def preprocess_data(df):
+        features = ['Age', 'G', 'GS', 'Cmp', 'Att', 'Cmp%', 'TD%', 'Int', 'Int%', '1D', 'Succ%', 'Lng',
+                    'Y/A', 'AY/A', 'Y/C', 'Y/G', 'Rate', 'QBR', 'Sk', 'Yds.1', 'Sk%', 'NY/A', 'ANY/A', '4QC', 'GWD', 'AV']
+        targets = ['Yds', 'TD', 'Int']
         
-    best_models = {}
+        X = df[features]
+        y = df[targets]
+        
+        return X, y
+
     
-    for model_name, model in zip(['Ridge', 'Lasso', 'ElasticNet'], [ridge_model, lasso_model, elasticnet_model]):
-        grid_search = GridSearchCV(estimator=model, param_grid=param_grid[model_name], cv=5, n_jobs=-1, scoring='neg_mean_squared_error')
-        grid_search.fit(X, y_yds)
-        
-        best_models[model_name] = grid_search.best_estimator_
-        predictions = grid_search.best_estimator_.predict(X)
-        mse = mean_squared_error(y_yds, predictions)
-        
-    best_model_name = min(best_models, key=lambda model: mean_squared_error(y_yds, best_models[model].predict(X)))
-    best_model = best_models[best_model_name]
-    # Train the best model on the entire dataset
-     
-    best_model.fit(X, y_yds)
+    def train_model(X_train, y_train):
+        model_yds = RandomForestRegressor(n_estimators=100, random_state=42)
+        model_tds = RandomForestRegressor(n_estimators=100, random_state=42)
+        model_ints = RandomForestRegressor(n_estimators=100, random_state=42)
+
+        model_yds.fit(X_train, y_train['Yds'])
+        model_tds.fit(X_train, y_train['TD'])
+        model_ints.fit(X_train, y_train['Int'])
+
+        return model_yds, model_tds, model_ints
+
+    
+    def evaluate_model(model_yds, model_tds, model_ints, X_test, y_test):
+        y_pred_yds = model_yds.predict(X_test)
+        y_pred_tds = model_tds.predict(X_test)
+        y_pred_ints = model_ints.predict(X_test)
+
+        mae_yds = mean_absolute_error(y_test['Yds'], y_pred_yds)
+        mae_tds = mean_absolute_error(y_test['TD'], y_pred_tds)
+        mae_ints = mean_absolute_error(y_test['Int'], y_pred_ints)
+
+        r2_yds = r2_score(y_test['Yds'], y_pred_yds)
+        r2_tds = r2_score(y_test['TD'], y_pred_tds)
+        r2_ints = r2_score(y_test['Int'], y_pred_ints)
+
+        print(f"MAE (Yds): {mae_yds:.2f}, R² (Yds): {r2_yds:.2f}")
+        print(f"MAE (TDs): {mae_tds:.2f}, R² (TDs): {r2_tds:.2f}")
+        print(f"MAE (Ints): {mae_ints:.2f}, R² (Ints): {r2_ints:.2f}")
+
+   
+    df = load_data()  
+    X, y = preprocess_data(df)
+
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    
+    model_yds, model_tds, model_ints = train_model(X_train, y_train)
+
+    
+    evaluate_model(model_yds, model_tds, model_ints, X_test, y_test)
+
+    
+    joblib.dump(model_yds, f'{save_path}model_yds.pkl')
+    joblib.dump(model_tds, f'{save_path}model_tds.pkl')
+    joblib.dump(model_ints, f'{save_path}model_ints.pkl')
+
+    print("Models saved successfully!")
+
 
 
 
