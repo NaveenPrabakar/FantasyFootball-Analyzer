@@ -60,19 +60,20 @@ const PlayerStats: React.FC = () => {
     const fetchPlayerData = async () => {
       try {
         const [
-          infoResponse,
-          statsResponse,
-          plotsResponse,
-          analysisResponse,
-          highlightsResponse
-        ] = await Promise.all([
-          axios.get(`${BACKEND_URL}/player-stats/${name}`),
-          axios.get(`${BACKEND_URL}/player/career/${name}`),
-          axios.get(`${BACKEND_URL}/serve_plot/${name}`),
-          axios.get(`${BACKEND_URL}/analyze/${name}`),
-          axios.get(`${BACKEND_URL}/search/${name}`)
-          )
-        ]);
+  infoResponse,
+  statsResponse,
+  plotsResponse,
+  analysisResponse,
+  highlightsResponse
+] = await Promise.all([
+  axios.get(`${BACKEND_URL}/player-stats/${name}`),
+  axios.get(`${BACKEND_URL}/player/career/${name}`),
+  axios.get(`${BACKEND_URL}/serve_plot/${name}`),
+  axios.get(`${BACKEND_URL}/analyze/${name}`),
+  axios.get(`${BACKEND_URL}/search/${name}`)
+]);
+
+
 
         if (infoResponse.data.players && infoResponse.data.players.length > 0) {
           setPlayerInfo(infoResponse.data.players[0]);
