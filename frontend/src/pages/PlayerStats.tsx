@@ -70,7 +70,7 @@ const PlayerStats: React.FC = () => {
           axios.get(`${BACKEND_URL}/player/career/${name}`),
           axios.get(`${BACKEND_URL}/serve_plot/${name}`),
           axios.get(`${BACKEND_URL}/analyze/${name}`),
-          axios.get(`${BACKEND_URL}/search/${name}`),
+          axios.get(`${BACKEND_URL}/search/${name}`)
           )
         ]);
 
