@@ -114,7 +114,7 @@ def check_file_exists(bucket_name, object_name):
 # Download a file from S3
 def download(bucket_name, object_name):
     try:
-        local_dir = "saved_graphs"
+        local_dir = "tmp/saved_graphs"
         os.makedirs(local_dir, exist_ok=True) 
     
         local_path = os.path.join(local_dir, object_name)
