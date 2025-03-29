@@ -82,10 +82,10 @@ def td_vs_int(df, playername):
     plt.grid(True, linestyle='--', alpha=0.7)
     plt.tight_layout()
 
-    plot_file_path = f"saved_graphs/{playername}.png"
+    plot_file_path = f"tmp/saved_graphs/{playername}.png"
     plt.savefig(plot_file_path)
 
-    aws.upload_file(f"saved_graphs/{playername}.png", "nflfootballwebsite", f"{playername}.png")
+    aws.upload_file(f"tmp/saved_graphs/{playername}.png", "nflfootballwebsite", f"{playername}.png")
 
     return plot_file_path
 
