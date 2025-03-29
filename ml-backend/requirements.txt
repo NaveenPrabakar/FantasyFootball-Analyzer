@@ -11,3 +11,4 @@ python-multipart==0.0.6
 boto3==1.29.3
 mysql-connector-python==8.2.0
 pymysql==1.0.2
+matplotlib
