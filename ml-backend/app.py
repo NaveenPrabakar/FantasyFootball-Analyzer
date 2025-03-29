@@ -20,6 +20,11 @@ if not GEMINI_API_KEY:
     raise ValueError("GEMINI_KEY environment variable is not set")
 genai.configure(api_key=GEMINI_API_KEY)
 
+saved_graphs_dir = "saved_graphs/"
+
+# Ensure the directory exists
+os.makedirs(saved_graphs_dir, exist_ok=True)
+
 # Initialize FastAPI app
 app = FastAPI()
 
