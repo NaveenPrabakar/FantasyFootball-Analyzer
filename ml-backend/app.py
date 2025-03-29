@@ -163,7 +163,7 @@ class QB:
                 "4. Summarize your analysis in a concise and structured way that can help coaches, analysts, or fans understand the player's performance."
             )
             answers = []
-            model = genai.GenerativeModel("gemini-pro-vision")
+            model = genai.GenerativeModel("gemini-2.0-flash")
             for image_path in image_directory:
                 try:
                     img = Image.open(image_path)
@@ -348,7 +348,7 @@ class RB:
                 "4. Summarize your analysis in a concise and structured way that can help coaches, analysts, or fans understand the player's performance."
             )
             answers = []
-            model = genai.GenerativeModel("gemini-pro-vision")
+            model = genai.GenerativeModel("gemini-2.0-Flash")
             for image_path in image_directory:
                 try:
                     img = Image.open(image_path)
