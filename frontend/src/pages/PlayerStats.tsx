@@ -64,17 +64,14 @@ const PlayerStats: React.FC = () => {
           statsResponse,
           plotsResponse,
           analysisResponse,
-          aiAnalysisResponse,
-          highlightsResponse,
-          predictionsResponse
+          highlightsResponse
         ] = await Promise.all([
           axios.get(`${BACKEND_URL}/player-stats/${name}`),
           axios.get(`${BACKEND_URL}/player/career/${name}`),
           axios.get(`${BACKEND_URL}/serve_plot/${name}`),
           axios.get(`${BACKEND_URL}/analyze/${name}`),
-          axios.get(`${BACKEND_URL}/AI/${name}`),
           axios.get(`${BACKEND_URL}/search/${name}`),
-          axios.get(`${BACKEND_URL}/predict/${name}`)
+          )
         ]);
 
         if (infoResponse.data.players && infoResponse.data.players.length > 0) {
@@ -93,17 +90,10 @@ const PlayerStats: React.FC = () => {
           setAnalysis(analysisResponse.data);
         }
 
-        if (aiAnalysisResponse.data) {
-          setAiAnalysis(aiAnalysisResponse.data);
-        }
-
         if (highlightsResponse.data) {
           setHighlights(highlightsResponse.data);
         }
 
-        if (predictionsResponse.data) {
-          setPredictions(predictionsResponse.data);
-        }
       } catch (err) {
         setError('Error fetching player data. Please try again.');
         console.error('Error:', err);
@@ -228,18 +218,6 @@ const PlayerStats: React.FC = () => {
         </div>
       )}
 
-      {/* AI Grade Reports */}
-      {aiAnalysis.length > 0 && (
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-4">AI Grade Reports</h2>
-          <div className="space-y-4">
-            {aiAnalysis.map((item, index) => (
-              <p key={index} className="text-gray-700">{item}</p>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Player Highlights */}
       {highlights && (
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
@@ -257,21 +235,7 @@ const PlayerStats: React.FC = () => {
       )}
 
       {/* Predictions */}
-      {predictions && (
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-4">Next Season Predictions</h2>
-          <p className="text-gray-700 mb-4">{predictions.message}</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {Object.entries(predictions.next_season_data).map(([key, value]) => (
-              <div key={key} className="p-4 bg-gray-50 rounded-lg">
-                <h3 className="font-semibold text-gray-900">{key}</h3>
-                <p className="text-gray-600">{value || 'N/A'}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
+    
       {/* Career Stats Table */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold mb-4">Detailed Career Stats</h2>
