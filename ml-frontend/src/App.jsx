@@ -6,7 +6,8 @@ import {
   fetchPlotImage,
   fetchCleanedOutput,
   fetchAnalysis,
-  fetchVideo
+  fetchVideo,
+  fetchPredictedStats
 } from "./services/api";
 import SearchBar from "./components/SearchBar";
 import MainStatsPage from "./components/MainStatsPage";
@@ -18,6 +19,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import Video from "./components/Video";
 import OpeningScript from "./components/OpeningScript";
 import PDFGenerator from "./components/PDFGenerator";
+import PredictButton from "./components/PredictButton";
 import "./App.css";
 import axios from "axios";
 
@@ -36,6 +38,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [videoUrl, setVideoUrl] = useState(null);
   const [showVideoPage, setShowVideoPage] = useState(false);
+  const [predictedStats, setPredictedStats] = useState(null);
 
   const handleSearch = async () => {
     if (!playerName) {
@@ -148,6 +151,23 @@ function App() {
     }
   };
 
+  const handleFetchPredictedStats = async () => {
+    if (!playerName) {
+      alert("Please search for a player first.");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await fetchPredictedStats(playerName);
+      setPredictedStats(response); 
+    } catch (error) {
+      alert(`Error fetching predicted stats: ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="container">
       {showOpeningScript ? (
@@ -197,6 +217,14 @@ function App() {
                   OnVideo={handleFetchVideo}
                 />
               )}
+              <PredictButton onPredict={handleFetchPredictedStats} />
+
+              {predictedStats && (
+                <div className="predicted-stats">
+                  <h2>Predicted Stats for {playerName}:</h2>
+                  <pre>{JSON.stringify(predictedStats, null, 2)}</pre>
+                  </div>
+                )}
 
               <PDFGenerator
                 playerStats={playerStats}

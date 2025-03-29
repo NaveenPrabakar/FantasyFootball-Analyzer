@@ -70,4 +70,10 @@ export const fetchVideo = async (playerName) => {
   }
 };
 
+//API to fetch predicated stats
+export const fetchPredictedStats = async (playerName) => {
+  const response = await axios.get(`/api/predict/${playerName}`);
+  return response.data;
+};
+
 
