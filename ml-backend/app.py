@@ -20,7 +20,7 @@ if not GEMINI_API_KEY:
     raise ValueError("GEMINI_KEY environment variable is not set")
 genai.configure(api_key=GEMINI_API_KEY)
 
-saved_graphs_dir = "saved_graphs/"
+saved_graphs_dir = "/tmp/saved_graphs/"
 
 # Ensure the directory exists
 os.makedirs(saved_graphs_dir, exist_ok=True)
@@ -138,9 +138,9 @@ class QB:
 
             return {
                 "data": [
-                    f"{BACKEND_URL}/serves_plot/saved_graphs/{self.player_name}.png",
-                    f"{BACKEND_URL}/serves_plot/saved_graphs/{self.player_name}(1).png",
-                    f"{BACKEND_URL}/serves_plot/saved_graphs/{self.player_name}(2).png",
+                    f"{BACKEND_URL}/serves_plot/tmp/saved_graphs/{self.player_name}.png",
+                    f"{BACKEND_URL}/serves_plot/tmp/saved_graphs/{self.player_name}(1).png",
+                    f"{BACKEND_URL}/serves_plot/tmp/saved_graphs/{self.player_name}(2).png",
                 ]
             }
 
@@ -153,9 +153,9 @@ class QB:
         """
         try:
             image_directory = [
-                f"saved_graphs/{self.player_name}.png",
-                f"saved_graphs/{self.player_name}(1).png",
-                f"saved_graphs/{self.player_name}(2).png",
+                f"tmp/saved_graphs/{self.player_name}.png",
+                f"tmp/saved_graphs/{self.player_name}(1).png",
+                f"tmp/saved_graphs/{self.player_name}(2).png",
             ]
             prompt = (
                 "You are a professional QB Analyzer specializing in evaluating quarterbacks' performance "
