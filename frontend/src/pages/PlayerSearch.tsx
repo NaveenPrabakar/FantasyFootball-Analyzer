@@ -28,7 +28,7 @@ const PlayerSearch: React.FC = () => {
     setError('');
     
     try {
-      const response = await axios.get(`http://localhost:8000/player-stats/${searchQuery}`);
+      const response = await axios.get(`https://winter-break-project.onrender.com/player-stats/${searchQuery}`);
       const data = response.data;
       
       if (data.players && data.players.length > 0) {
